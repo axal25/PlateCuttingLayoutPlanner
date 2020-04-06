@@ -1,0 +1,239 @@
+.root{
+    -fx-background-color: rgb(90, 90, 90);
+    -fx-font-size: 12;
+}
+
+.button{
+    -fx-padding: 0.5em 0.5em;
+    -fx-font-size: 12;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(77,102,204);
+    -fx-min-width: 150;
+    -fx-text-fill: WHITE;
+}
+
+.button-confirm{
+    -fx-background-color: rgb(54, 117, 0);
+}
+
+.button-cancel{
+    -fx-background-color: rgb(134, 0, 17);
+}
+
+/*id="bigger-button*/
+#bigger-button{
+    -fx-padding: 0.7em 0.57em;
+    -fx-font-size: 14px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(77,102,204);
+    -fx-pref-width: 200;
+    -fx-text-fill: WHITE;
+}
+
+/*styleClass="bigger-button*/
+.bigger-green-button{
+    -fx-font-size: 20px;
+    -fx-background-size: 20px;
+    -fx-background-color: rgb(54, 117, 0);
+}
+
+.bigger-green-button:disabled{
+    -fx-background-color: rgb(134, 0, 17);
+}
+
+.label{
+    -fx-padding:10;
+    -fx-text-fill: rgb(185, 185, 185);
+    -fx-background-color: rgb(77,102,204);
+    -fx-background-radius: 5;
+    -fx-border-color: rgb(185, 185, 185);
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgb(50, 50, 50), 5, 0.05, 0, 2);
+}
+
+.jfx-rippler1{
+    -jfx-rippler-recenter: true;
+    -jfx-rippler-fill: rgb(77,102,204);
+    -jfx-rippler-radius: 500;
+    -jfx-mask-type: CIRCLE;
+    -fx-background-color: rgb(255, 0, 255);
+}
+
+
+.jfx-rippler2{
+    -jfx-rippler-recenter: false;
+    -jfx-rippler-fill: rgb(77,102,204);
+    -jfx-rippler-radius: 500;
+    -jfx-mask-type: RECT;
+    -fx-background-color: rgb(255, 0, 255);
+}
+
+.jfx-progress-bar-hidden{
+    visibility: hidden;
+}
+
+.jfx-progress-bar-visible{
+    visibility: visible;
+}
+
+.menu-bar{
+    -fx-background-color: linear-gradient(from 50% 0% to 50% 100%, rgb(120, 120, 120), rgb(60, 60, 60));
+}
+
+.menu-bar > .container > .menu-button > .label,
+.menu-bar > .container > .menu-button > .label,
+.menu-bar > .container > .menu-button > .label {
+    -fx-text-fill: rgb(185, 185, 185);
+    -fx-opacity: 0.75;
+}
+
+.menu-bar > .container > .menu-button > .label:hover,
+.menu-bar > .container > .menu-button > .label:showing,
+.menu-bar > .container > .menu-button > .label:focused {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-opacity: 1;
+}
+
+.menu-bar .menu-button:hover,
+.menu-bar .menu-button:showing,
+.menu-bar .menu-button:focused {
+    -fx-background-color: rgb(185, 185, 185);
+    -fx-background-radius: 10;
+    -fx-opacity: 1;
+}
+
+.context-menu {
+    -fx-background-color: linear-gradient(from 50% 100% to 50% 0%, rgb(120, 120, 120), rgb(60, 60, 60));
+    -fx-background-radius: 10;
+}
+
+.menu-item:focused {
+    -fx-background-color: rgb(185, 185, 185);
+    -fx-background-radius: 10;
+}
+
+.menu-item .label {
+    -fx-opacity: 0.75;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-opacity: 1;
+}
+
+.menu-item-selected {
+    -fx-background-color: rgb(77,102,204);
+    -fx-background-radius: 10;
+    -fx-border-color: rgb(93, 119, 255);
+    -fx-border-width: 5;
+    -fx-border-radius: 5;
+    -fx-opacity: 0.75;
+}
+
+.menu-item-selected:focused .label {
+    -fx-opacity: 0.75;
+}
+
+.menu-item-selected:focused {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-opacity: 1;
+}
+
+.menu-item-selected:focused .label {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-opacity: 1;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: rgb(100, 100, 100);
+}
+
+.jfx-text-area{
+    -fx-background-color: rgb(150, 150, 150);
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-border-width: 5;
+}
+
+.jfx-text-field{
+    -fx-background-color: rgb(150, 150, 150);
+    -fx-text-fill: rgb(255, 255, 255);
+}
+
+.text-field .context-menu .separator {
+    -fx-opacity: 0;
+    -fx-background-color: red;
+}
+
+.text-area .context-menu .separator {
+    -fx-opacity: 0;
+    -fx-background-color: red;
+}
+
+.text-area .editable {
+    -fx-background-color: red;
+}
+
+.text-field .editable {
+    -fx-background-color: red;
+}
+
+
+.combo-box-base .label,
+.choice-box-base .label {
+    -fx-opacity: 1;
+}
+
+.combo-box,
+.choice-box {
+    -fx-background-color: rgb(150, 150, 150);
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-view,
+.choice-box-popup .list-view{
+    -fx-background-color: linear-gradient(from 50% 100% to 50% 0%, rgb(120, 120, 120), rgb(60, 60, 60));
+}
+
+.combo-box .list-cell,
+.choice-box .list-cell {
+    -fx-background-color: transparent;
+}
+
+.combo-box .list-cell:hover,
+.choice-box .list-cell:hover {
+    -fx-background-color: rgb(185, 185, 185);
+    -fx-background-radius: 10;
+    -fx-opacity: 1;
+}
+
+.combo-box .list-cell:selected,
+.choice-box .list-cell:selected{
+    -fx-background-color: rgb(77,102,204);
+    -fx-background-radius: 10;
+    -fx-border-color: rgb(93, 119, 255);
+    -fx-border-width: 5;
+    -fx-border-radius: 5;
+    -fx-opacity: 0.75;
+}
+
+.combo-box .list-cell:hover,
+.combo-box .list-cell:hover {
+    -fx-opacity: 1;
+}
+
+.combo-box .list-cell .label,
+.choice-box .list-cell .label {
+    -fx-opacity: 0.75;
+}
+
+.combo-box .list-cell:hover .label,
+.choice-box .list-cell:hover .label {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-opacity: 1;
+}
+
+.combo-box .arrow,
+.choice-box .arrow {
+    -fx-background-color: white;
+}

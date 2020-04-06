@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.center.options.lab1.Lab1UIIntroController">
+   <content>
+      <AnchorPane prefHeight="1575.0" prefWidth="785.0">
+         <children>
+            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label text="Laboratory #1 Introduction">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Region maxHeight="50.0" minHeight="50.0" prefHeight="50.0" />
+                  <HBox alignment="CENTER" prefHeight="75.0">
+                     <children>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="Source code #1">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Region layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                        <Label text="Output #1">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox maxHeight="360.0" minHeight="360.0" prefHeight="360.0">
+                     <children>
+                        <JFXTextArea fx:id="sourceTextArea1" editable="false" maxWidth="600.0" minWidth="600.0" prefWidth="600.0">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </JFXTextArea>
+                        <JFXTextArea fx:id="outputTextArea1" editable="false" layoutX="15.0" layoutY="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </JFXTextArea>
+                     </children>
+                  </HBox>
+                  <Region maxHeight="50.0" minHeight="50.0" prefHeight="50.0" />
+                  <HBox alignment="CENTER" prefHeight="75.0">
+                     <children>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="Source code #2">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Region layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                        <Label text="Output #2">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox maxHeight="350.0" minHeight="350.0" prefHeight="350.0">
+                     <children>
+                        <JFXTextArea fx:id="sourceTextArea2" editable="false" maxWidth="600.0" minWidth="600.0" prefWidth="600.0">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </JFXTextArea>
+                        <JFXTextArea fx:id="outputTextArea2" editable="false" layoutX="15.0" layoutY="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </JFXTextArea>
+                     </children>
+                  </HBox>
+                  <Region maxHeight="50.0" minHeight="50.0" prefHeight="50.0" />
+                  <HBox alignment="CENTER" prefHeight="75.0">
+                     <children>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="Source code #3">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Region layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                        <Label text="Output #3">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox maxHeight="500.0" minHeight="500.0" prefHeight="500.0">
+                     <children>
+                        <JFXTextArea fx:id="sourceTextArea3" editable="false" maxWidth="500.0" minWidth="500.0" prefWidth="500.0">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </JFXTextArea>
+                        <JFXTextArea fx:id="outputTextArea3" editable="false" layoutX="15.0" layoutY="15.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </JFXTextArea>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </content>
+</ScrollPane>
