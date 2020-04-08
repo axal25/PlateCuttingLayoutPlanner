@@ -1,11 +1,7 @@
 package main;
 
-import coords.BadCoordinateValueException;
 import cutter.Cutter;
-import parser.BadAmountOfInputArgsException;
-import parser.InputParser;
 import replaced.out.MockSystem;
-import sheet.exceptions.*;
 
 public class Main {
 
@@ -18,12 +14,8 @@ public class Main {
             Cutter cutter = new Cutter(args);
             String output = cutter.cut();
             System.out.println(output);
-        } catch (
-                LayoutFactoryAlreadyInitiatedException | BadAmountOfInputArgsException | SheetSizeException | NegativePiecePointsException | CalculatedAndInputAmountOfPiecesNotMatchException | SheetAmountExceededLimitException | LayoutFactoryNotInitiatedException | PieceCanNotFitIntoLayoutException | BadCoordinateValueException | CloneNotSupportedException | PieceVariationsNotInitiatedException e
-        ) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-
-//            System.out.println();
 //            e.printStackTrace();
         }
     }

@@ -1,6 +1,5 @@
 package main;
 
-import coords.BadCoordinateValueException;
 import org.junit.jupiter.api.*;
 import replaced.out.MainWithReplacedOut;
 import sheet.*;
@@ -196,10 +195,36 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     @Test
     @Order(13)
     @DisplayName("StaticLayoutFactory, LayoutFactory, Layout visibility")
-    void Main_SheetLayout_visibility() throws SheetSizeException, SheetAmountExceededLimitException, BadCoordinateValueException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException {
+    void Main_SheetLayout_visibility() throws SheetSizeException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException {
         StaticLayoutFactory.initLayoutFactor(StaticPieceFactoryTest.DEFAULT_WIDTH + 1, StaticPieceFactoryTest.DEFAULT_HEIGHT + 1);
         LayoutFactory layoutFactory = StaticLayoutFactory.getLayoutFactory();
         Layout layout = layoutFactory.getLayout();
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("Catch BadAmountOfInputArgsException")
+    void Main_catch_badAmountOfInputArgsException() throws SheetSizeException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException {
+        MainWithReplacedOut main = new MainWithReplacedOut();
+        String[] args = {"1"};
+        main.main(args);
+        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
+        final String expectedExceptionMessage = "InputParser.validateLengthArgsForSheetLayoutFactory(String[] args) Amount of arguments must equal to 2 (args.length == 2) or be divisible by 3 (args.length % 3 == 0). Amount of arguments detected: 1. So args.length % 3 = 1.\n";
+        assertEquals(expectedExceptionMessage, main.getByteArrayOutputStream().toString());
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("Catch runtime exception")
+    void Main_catch_runtime_exception() throws SheetSizeException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException {
+        MainWithReplacedOut main = new MainWithReplacedOut();
+        String[] args = {"A", "1", "2"};
+        main.main(args);
+        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
+        final String expectedExceptionMessage = "Could not parse sheet layout data. For input string: \"A\"\n";
+        assertEquals(expectedExceptionMessage, main.getByteArrayOutputStream().toString());
     }
 
     @Test

@@ -1,9 +1,11 @@
 package sheet;
 
-import coords.BadCoordinateValueException;
-import coords.Coordinate;
 import coords.RectangleCorners;
+import coords.exceptions.BadCoordinateValueException;
+import coords.Coordinate;
+import cutter.CutCase;
 import cutter.Solution;
+import cutter.exceptions.CutCaseNullArgumentException;
 import sheet.exceptions.LayoutFactoryNotInitiatedException;
 import sheet.exceptions.NegativePiecePointsException;
 import sheet.exceptions.PieceCanNotFitIntoLayoutException;
@@ -25,71 +27,21 @@ public class FreePieceVariation extends PieceVariation implements Comparable<Fre
         setNorthWesternCoord(new Coordinate(coordX, coordY));
     }
 
-    public boolean isOverlapping(PieceVariation pieceVariation) throws BadCoordinateValueException {
-        RectangleCorners freePieceVariationRectangleCornersSheetPieceVariation = new RectangleCorners(
-                this.getNorthWesternCoord(),
-                this.getPiece().getWidth(),
-                this.getPiece().getHeight()
-        );
-        RectangleCorners pieceVariationRectangleCornersSheetPieceVariation = new RectangleCorners(
-                pieceVariation.getNorthWesternCoord(),
-                pieceVariation.getPiece().getWidth(),
-                pieceVariation.getPiece().getHeight()
-        );
-        return freePieceVariationRectangleCornersSheetPieceVariation.isOverlapping(pieceVariationRectangleCornersSheetPieceVariation);
-    }
-
-    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(PieceVariation pieceVariation) throws BadCoordinateValueException {
+    /**
+     * if piece variation is the same size as this free piece variation - nothing is left, so we don't add anything
+     * if PieceVariation is overlapping one of freePieceVariations but doesn't fit inside
+     * it fits completely inside another, but only partially inside this one
+     */
+    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(PieceVariation pieceVariation) throws BadCoordinateValueException, CutCaseNullArgumentException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException {
         TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
-        if(this.isOverlapping(pieceVariation)) {
-            /**
-             * returned cutUpFreePieceVariations are always biggest, and overlapping,
-             * so if PieceVariation is overlapping then it fits inside (because it fits inside whole layout)
-             * if piece variation is the same size as this free piece variation nothing is left, so we don't add anything
-             */
-            if(isPieceVariationSmaller(pieceVariation)) {
-                // todo two points are not enough, need all pieceVariation's corners not on corners of THIS
-                // todo then all combinations of two of those X points are on sides of new FreePieceVariationS
-                Coordinate[] twoPieceVariationCornersOnThisSides = findTwoPieceVariationCornersOnThisSides(pieceVariation);
+        if(pieceVariation.isOverlapping(this)) {
+            if(!pieceVariation.isInsideOther(this)) {
+                pieceVariation = pieceVariation.getFragmentInsideOther(this);
             }
+            CutCase cutCase = CutCase.getCutCase(this, pieceVariation);
+            cutUpFreePieceVariations.addAll(cutCase.getCutUpFreePieceVariation(this, pieceVariation));
         } else cutUpFreePieceVariations.add(this);
         return cutUpFreePieceVariations;
-    }
-
-    private boolean isPieceVariationSmaller(PieceVariation pieceVariation) {
-        return this.getPiece().getWidth() > pieceVariation.getPiece().getHeight() && this.getPiece().getHeight() > pieceVariation.getPiece().getHeight();
-    }
-
-    private Coordinate[] findTwoPieceVariationCornersOnThisSides(PieceVariation pieceVariation) throws BadCoordinateValueException {
-        Coordinate[] twoPieceVariationCornersOnThisSides = new Coordinate[2];
-        Coordinate[] pieceVariationCoordinates = get4Corners(pieceVariation);
-        Coordinate[] freeVariationCoordinates = get4Corners(this);
-        int index = 0;
-        for (int i = 0; i < 4; i++) {
-            if(!pieceVariationCoordinates[i].equals(freeVariationCoordinates[i])) {
-                twoPieceVariationCornersOnThisSides[index] = pieceVariationCoordinates[i];
-                index++;
-            }
-        }
-        return twoPieceVariationCornersOnThisSides;
-    }
-
-    private Coordinate[] get4Corners(PieceVariation pieceVariation) throws BadCoordinateValueException {
-        Coordinate[] pieceVariationCoordinates = new Coordinate[4];
-        pieceVariationCoordinates[0] = pieceVariation.getNorthWesternCoord();
-        pieceVariationCoordinates[1] = new Coordinate(
-                pieceVariation.getNorthWesternCoord().getX() + pieceVariation.getPiece().getWidth(),
-                pieceVariation.getNorthWesternCoord().getY()
-        );
-        pieceVariationCoordinates[2] = new Coordinate(
-                pieceVariation.getNorthWesternCoord().getX() + pieceVariation.getPiece().getWidth(),
-                pieceVariation.getNorthWesternCoord().getY() + pieceVariation.getPiece().getHeight()
-        );
-        pieceVariationCoordinates[3] = new Coordinate(
-                pieceVariation.getNorthWesternCoord().getX(),
-                pieceVariation.getNorthWesternCoord().getY() + pieceVariation.getPiece().getHeight()
-        );
-        return pieceVariationCoordinates;
     }
 
     @Override
@@ -103,7 +55,7 @@ public class FreePieceVariation extends PieceVariation implements Comparable<Fre
                 .append(this.getClass().getSimpleName())
                 .append("{")
                 .append("piece=")
-                .append(super.getPiece())
+                .append(this.getPiece())
                 .append(", orientation=")
                 .append(super.getOrientation())
                 .append(", northEasternCoord=")
@@ -118,7 +70,7 @@ public class FreePieceVariation extends PieceVariation implements Comparable<Fre
                 .append("{\n");
         Solution.appendByTab(output, level+1)
                 .append("piece=")
-                .append(super.getPiece())
+                .append(this.getPiece())
                 .append(",\n");
         Solution.appendByTab(output, level+1)
                 .append("orientation=")

@@ -1,5 +1,6 @@
 package coords;
 
+import coords.exceptions.BadCoordinateValueException;
 import org.junit.jupiter.api.*;
 import sheet.Layout;
 
@@ -119,5 +120,29 @@ public class CoordinateTest {
         assertTrue(coord1 != coord3);
         assertTrue(coord2 != coord1);
         assertTrue(coord2 != coord3);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("isBetweenCoords")
+    void isBetweenCoords() throws BadCoordinateValueException {
+        isBetweenCoords(0, 0, 15, 15, 5, 5);
+        isBetweenCoords(0, 0, 0, 10, 0, 5);
+        isBetweenCoords(0, 0, 10, 0, 5, 0);
+    }
+
+    void isBetweenCoords(int startX, int startY, int stopX, int stopY, int betweenX, int betweenY) throws BadCoordinateValueException {
+        Coordinate coord1 = coordinateConstructorCorrectValues(startX, startY);
+        Coordinate coord2 = coordinateConstructorCorrectValues(betweenX, betweenY);
+        Coordinate coord3 = coordinateConstructorCorrectValues(stopX, stopY);
+        assertTrue(coord2.isBetweenCoords(coord1, coord3));
+        assertTrue(coord2.isBetweenCoords(coord3, coord1));
+        assertFalse(coord1.isBetweenCoords(coord2, coord3));
+        assertFalse(coord1.isBetweenCoords(coord3, coord2));
+        assertFalse(coord1.isBetweenCoords(coord1, coord1));
+        assertFalse(coord1.isBetweenCoords(coord1, coord2));
+        assertFalse(coord1.isBetweenCoords(coord2, coord1));
+        assertFalse(coord1.isBetweenCoords(coord1, coord3));
+        assertFalse(coord1.isBetweenCoords(coord3, coord1));
     }
 }

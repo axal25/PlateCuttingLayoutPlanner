@@ -6,6 +6,7 @@ import sheet.sort.strategy.PieceSortStrategy;
 import static sheet.StaticLayoutFactory.*;
 
 public class Piece extends Sheet implements Comparable<Piece> {
+    static PieceSortStrategy pieceSortStrategy = PieceSortStrategy.LONGEST_SIDE_DESC;
     private int points;
 
     Piece(int id, int width, int height, int points) throws SheetSizeException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
@@ -18,12 +19,17 @@ public class Piece extends Sheet implements Comparable<Piece> {
         this(template.getId(), template.getWidth(), template.getHeight(), template.points);
     }
 
-    void validate() throws LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
-        if(!isCanFitIntoSheetLayout()) throw new PieceCanNotFitIntoLayoutException(
-                Piece.class.getSimpleName(),
-                "validate()",
-                "Piece cannot fit into into Layout."
-        );
+    public static PieceSortStrategy getPieceSortStrategy() throws PieceSortStrategyNotInitiatedException {
+        if(pieceSortStrategy == null)
+            throw new PieceSortStrategyNotInitiatedException(
+                    StaticPieceFactory.class.getSimpleName(),
+                    "getPieceSortStrategy()",
+                    new StringBuilder()
+                            .append("StaticPieceFactory.pieceSortStrategy field should never be null. ")
+                            .append("It must be first initiated to be used.")
+                            .toString()
+            );
+        return pieceSortStrategy;
     }
 
     private boolean isCanFitIntoSheetLayout() throws LayoutFactoryNotInitiatedException {
@@ -31,7 +37,7 @@ public class Piece extends Sheet implements Comparable<Piece> {
         final int pieceShorterSide = Math.min(getWidth(), getHeight());
         /**
          * Because sides of piece and layout are always diagonal to each other (height to height, width to width)
-         * Meaning piece can be rotated by arbitrary number of degrees, only by 90 degrees or its multiplicity (180, 270, 360...)
+         * Meaning piece can not be rotated by arbitrary number of degrees, only by 90 degrees or its multiplicity (180, 270, 360...)
          * Diagonal check is not enough to determinate if one rectangle can fit into another
          * Diagonal check - is diagonal of layout larger or equal to piece diagonal
          */
@@ -67,7 +73,7 @@ public class Piece extends Sheet implements Comparable<Piece> {
         PieceSortStrategy pieceSortStrategy;
         final int defaultAnswer = other.getId() - this.getId();
         try {
-            pieceSortStrategy = StaticPieceFactory.getPieceSortStrategy();
+            pieceSortStrategy = getPieceSortStrategy();
         } catch (PieceSortStrategyNotInitiatedException e) {
             return defaultAnswer;
         }
@@ -157,7 +163,30 @@ public class Piece extends Sheet implements Comparable<Piece> {
                 .append("id=").append(super.getId())
                 .append(", width=").append(super.getWidth())
                 .append(", height=").append(super.getHeight())
-                .append(", points=").append(this.points)
+                .append(", points=").append(this.getPoints())
                 .append("}").toString();
+    }
+
+    // ONLY FOR SORTING TESTING PURPOSES
+    public interface InterfaceTestingPieceSortStrategy {
+        default void setPieceSortStrategy(PieceSortStrategy pieceSortStrategy) {
+            Piece.setPieceSortStrategy(pieceSortStrategy);
+        }
+        default PieceSortStrategy getPieceSortStrategy() {
+            return pieceSortStrategy;
+        }
+    }
+
+    // ONLY FOR SORTING TESTING PURPOSES
+    private static void setPieceSortStrategy(PieceSortStrategy pieceSortStrategy) {
+        Piece.pieceSortStrategy = pieceSortStrategy;
+    }
+
+    void validate() throws LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+        if(!isCanFitIntoSheetLayout()) throw new PieceCanNotFitIntoLayoutException(
+                Piece.class.getSimpleName(),
+                "validate()",
+                "Piece cannot fit into into Layout."
+        );
     }
 }

@@ -1,6 +1,7 @@
 package cutter;
 
-import coords.BadCoordinateValueException;
+import coords.exceptions.BadCoordinateValueException;
+import cutter.exceptions.CutCaseNullArgumentException;
 import sheet.LayoutVariation;
 import sheet.PieceVariation;
 import sheet.exceptions.*;
@@ -32,7 +33,7 @@ public class Solution implements Comparable<Solution> {
 
 //    public LayoutVariation getSheetLayoutVariationWith
 
-    public LayoutVariation getSheetLayoutVariationWithEnoughFreeSpace(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException {
+    public LayoutVariation getSheetLayoutVariationWithEnoughFreeSpace(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
         LayoutVariation layoutVariation = getSheetLayoutVariationWithEnoughFreeSpaceOrLast(largestPieceVariation);
         if(!layoutVariation.isEnoughFreeArea(largestPieceVariation)) {
             this.layoutVariations.add(new LayoutVariation());
@@ -41,7 +42,7 @@ public class Solution implements Comparable<Solution> {
         return layoutVariation;
     }
 
-    private LayoutVariation getSheetLayoutVariationWithEnoughFreeSpaceOrLast(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException {
+    private LayoutVariation getSheetLayoutVariationWithEnoughFreeSpaceOrLast(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
         Iterator sheetLayoutVariationsIterator = this.layoutVariations.iterator();
         if(!sheetLayoutVariationsIterator.hasNext()) this.layoutVariations.add(new LayoutVariation());
         LayoutVariation layoutVariation = (LayoutVariation) sheetLayoutVariationsIterator.next();

@@ -1,4 +1,4 @@
-package coords;
+package coords.exceptions;
 
 public class BadCoordinateValueException extends Exception {
     public BadCoordinateValueException(String callingClassName, String callingFunctionName, String xOrYName, int xOrYValue) {

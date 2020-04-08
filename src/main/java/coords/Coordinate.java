@@ -1,14 +1,13 @@
 package coords;
 
-import parser.BadAmountOfInputArgsException;
-import parser.InputParser;
+import coords.exceptions.BadCoordinateValueException;
 
 /** Unfortunate name
  * I've decided to avoid class name "Points"
  * because there already exist field int points in Piece class for amount of points given fitting (cutting) operation will yield
  * It is recommended to avoid confusion and mistakes
  */
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate> {
     private int x, y;
 
     private Coordinate() {
@@ -51,6 +50,27 @@ public class Coordinate {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public boolean isBetweenCoords(Coordinate coord1, Coordinate coord2) {
+        int vectorXThisTo1 = this.x - coord1.x;
+        int vectorYThisTo1 = this.y - coord1.y;
+
+        int vectorX2to1 = coord2.x - coord1.x;
+        int vectorY2to1 = coord2.y - coord1.y;
+
+        int crossProductOfVectors = vectorXThisTo1 * vectorY2to1 - vectorYThisTo1 * vectorX2to1;
+        if(crossProductOfVectors != 0) return false;
+
+        // is x part of vector (2 to 1) bigger or equal than y part of the same vector
+        // is more horizontal than vertical
+        if(Math.abs(vectorX2to1) >= Math.abs(vectorY2to1)) {
+            if(vectorX2to1 > 0) return coord1.getX() < this.getX() && this.getX() < coord2.getX();
+            else return coord2.getX() < this.getX() && this.getX() < coord1.getX();
+        } else {
+            if(vectorY2to1 > 0) return coord1.getY() < this.getY() && this.getY() < coord2.getY();
+            else return coord2.getY() < this.getY() && this.getY() < coord1.getY();
+        }
     }
 
     @Override
@@ -100,5 +120,11 @@ public class Coordinate {
                 );
             }
         }
+    }
+
+
+    @Override
+    public int compareTo(Coordinate other) {
+        return ( this.getX() != other.getX() ) ? this.getX() - other.getX() : this.getY() - other.getY();
     }
 }

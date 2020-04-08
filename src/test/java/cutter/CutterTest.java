@@ -1,9 +1,10 @@
 package cutter;
 
-import coords.BadCoordinateValueException;
+import coords.exceptions.BadCoordinateValueException;
+import cutter.exceptions.CutCaseNullArgumentException;
 import main.MainTest;
 import org.junit.jupiter.api.*;
-import parser.BadAmountOfInputArgsException;
+import parser.exceptions.BadAmountOfInputArgsException;
 import sheet.Piece;
 import sheet.StaticLayoutFactory;
 import sheet.StaticPieceFactory;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CutterTest implements StaticPieceFactory.InterfaceTestingPieceSortStrategy, StaticLayoutFactory.InterfaceTestingStaticSheetFactory, StaticPieceFactory.InterfaceTestingStaticPieceFactory {
+public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, StaticLayoutFactory.InterfaceTestingStaticSheetFactory, StaticPieceFactory.InterfaceTestingStaticPieceFactory {
     public static String[] ARGS = MainTest.ARGS;
 
     @BeforeEach
@@ -182,7 +183,7 @@ public class CutterTest implements StaticPieceFactory.InterfaceTestingPieceSortS
     @Test
     @Order(9)
     @DisplayName("Developing test")
-    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException {
+    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
         Cutter cutter = new Cutter(ARGS);
         cutter.cut();
         for (Solution solution : cutter.getSolutions()) {

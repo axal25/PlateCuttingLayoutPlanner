@@ -1,5 +1,6 @@
 package parser;
 
+import parser.exceptions.BadAmountOfInputArgsException;
 import sheet.*;
 import sheet.exceptions.*;
 
@@ -19,9 +20,9 @@ public class InputParser {
                 InputParser.class.getSimpleName(),
                 functionName,
                 new StringBuilder()
-                        .append("Amount of arguments must equal to 2 (args.length != 2) or be divisible by 3. (")
+                        .append("Amount of arguments must equal to 2 (args.length == 2) or be divisible by 3 (")
                         .append(division)
-                        .append(" != 0). Amount of arguments detected: ")
+                        .append(" == 0). Amount of arguments detected: ")
                         .append(args.length)
                         .append(". So ")
                         .append(division)
@@ -55,17 +56,17 @@ public class InputParser {
         if(args == null) return;
         final String functionName = "validateLengthArgsForSheetPieces(String[] args)";
         final int modulo = args.length % 3;
-        final String division = "args.length % 3";
+        final String moduloOperation = "args.length % 3";
         if(modulo != 0) throw new BadAmountOfInputArgsException(
                 InputParser.class.getSimpleName(),
                 functionName,
                 new StringBuilder()
                         .append("Amount of arguments must be divisible by 3. (")
-                        .append(division)
-                        .append(" != 0). Amount of arguments detected: ")
+                        .append(moduloOperation)
+                        .append(" == 0). Amount of arguments detected: ")
                         .append(args.length)
                         .append(". So ")
-                        .append(division)
+                        .append(moduloOperation)
                         .append(" = ")
                         .append(modulo)
                         .append(".")

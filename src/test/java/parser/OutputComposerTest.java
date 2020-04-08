@@ -1,15 +1,15 @@
 package parser;
 
-import coords.BadCoordinateValueException;
+import coords.exceptions.BadCoordinateValueException;
 import cutter.Cutter;
+import cutter.Solution;
+import cutter.exceptions.CutCaseNullArgumentException;
 import main.MainTest;
 import org.junit.jupiter.api.*;
-import cutter.Solution;
+import parser.exceptions.BadAmountOfInputArgsException;
 import sheet.StaticLayoutFactory;
 import sheet.StaticPieceFactory;
 import sheet.exceptions.*;
-
-import java.util.Currency;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,7 +52,7 @@ public class OutputComposerTest implements StaticLayoutFactory.InterfaceTestingS
     @Test
     @Order(99)
     @DisplayName("getOutputString PDF Example")
-    void OutputComposer_getOutputString_PDFExample() throws NegativePiecePointsException, SheetSizeException, BadAmountOfInputArgsException, SheetAmountExceededLimitException, LayoutFactoryAlreadyInitiatedException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException {
+    void OutputComposer_getOutputString_PDFExample() throws NegativePiecePointsException, SheetSizeException, BadAmountOfInputArgsException, SheetAmountExceededLimitException, LayoutFactoryAlreadyInitiatedException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
         Cutter cutter = new Cutter(ARGS);
         String output1 = cutter.cut();
         String output2 = OutputComposer.getOutputString(cutter.getBestSolution());

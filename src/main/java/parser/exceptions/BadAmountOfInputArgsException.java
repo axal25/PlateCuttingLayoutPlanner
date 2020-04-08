@@ -1,4 +1,4 @@
-package parser;
+package parser.exceptions;
 
 public class BadAmountOfInputArgsException extends Exception {
     public BadAmountOfInputArgsException(String callingClassName, String callingFunctionName, String cause) {

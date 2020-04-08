@@ -2,13 +2,14 @@ package parser;
 
 import main.MainTest;
 import org.junit.jupiter.api.*;
+import parser.exceptions.BadAmountOfInputArgsException;
 import sheet.*;
 import sheet.exceptions.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class InputParserTest {
+public class InputParserTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory {
     public static String[] ARGS = MainTest.ARGS;
     public static String EXPECTED_OUTPUT = MainTest.EXPECTED_OUTPUT;
 
@@ -18,6 +19,18 @@ public class InputParserTest {
 
     public static String getSheetLayoutToString(int id, int width, int height) {
         return StaticLayoutFactoryTest.getSheetLayoutToString(id, width, height);
+    }
+
+    @BeforeEach
+    void setUp() {
+        this.resetLayoutFactory();
+        this.resetPieceFactory();
+    }
+
+    @AfterEach
+    void tearDown() {
+        this.resetLayoutFactory();
+        this.resetPieceFactory();
     }
 
     @Test
@@ -32,7 +45,8 @@ public class InputParserTest {
     @Test
     @Order(2)
     @DisplayName("getPieces PDF Example")
-    void InputParser_getSheetPieces_PDFExample() throws NegativePiecePointsException, SheetSizeException, BadAmountOfInputArgsException, SheetAmountExceededLimitException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void InputParser_getSheetPieces_PDFExample() throws NegativePiecePointsException, SheetSizeException, BadAmountOfInputArgsException, SheetAmountExceededLimitException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutFactoryAlreadyInitiatedException {
+        InputParser.initSheetLayoutFactory(ARGS);
         Piece[] pieces = InputParser.getSheetPieces(ARGS);
         assertEquals(8, pieces.length);
         assertEquals(getSheetPieceToString(0,6,6, 9), pieces[0].toString());

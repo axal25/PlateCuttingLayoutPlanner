@@ -1,6 +1,6 @@
 package sheet;
 
-import coords.BadCoordinateValueException;
+import coords.exceptions.BadCoordinateValueException;
 import org.junit.jupiter.api.*;
 import sheet.exceptions.SheetAmountExceededLimitException;
 import sheet.exceptions.LayoutFactoryAlreadyInitiatedException;
