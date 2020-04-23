@@ -1,9 +1,11 @@
 package cutter;
 
 import coords.exceptions.BadCoordinateValueException;
-import cutter.exceptions.CutCaseNullArgumentException;
 import sheet.LayoutVariation;
-import sheet.PieceVariation;
+import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
+import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
+import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
+import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
 import sheet.exceptions.*;
 
 import java.util.Iterator;
@@ -12,15 +14,15 @@ import java.util.TreeSet;
 public class Solution implements Comparable<Solution> {
     private TreeSet<LayoutVariation> layoutVariations;
 
-    public Solution() {
+    public Solution() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, CornerNotOnSideException {
         this.layoutVariations = new TreeSet<>();
+        this.getLayoutVariations().add(new LayoutVariation());
     }
 
-    public Solution(Solution template) throws CloneNotSupportedException {
-        this();
-        for (LayoutVariation layoutVariation : template.layoutVariations) {
+    public Solution(Solution template) throws CloneNotSupportedException, SheetSizeException, CornersOnSidesShareNoCoordinateException, BadCoordinateValueException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException {
+        this.layoutVariations = new TreeSet<>();
+        for (LayoutVariation layoutVariation : template.layoutVariations)
             this.layoutVariations.add((LayoutVariation) layoutVariation.clone());
-        }
     }
 
     public TreeSet<LayoutVariation> getLayoutVariations() {
@@ -31,38 +33,19 @@ public class Solution implements Comparable<Solution> {
         this.layoutVariations.add(layoutVariation);
     }
 
-//    public LayoutVariation getSheetLayoutVariationWith
-
-    public LayoutVariation getSheetLayoutVariationWithEnoughFreeSpace(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
-        LayoutVariation layoutVariation = getSheetLayoutVariationWithEnoughFreeSpaceOrLast(largestPieceVariation);
-        if(!layoutVariation.isEnoughFreeArea(largestPieceVariation)) {
-            this.layoutVariations.add(new LayoutVariation());
-            layoutVariation = getSheetLayoutVariationWithEnoughFreeSpaceOrLast(largestPieceVariation);
-        }
-        return layoutVariation;
-    }
-
-    private LayoutVariation getSheetLayoutVariationWithEnoughFreeSpaceOrLast(PieceVariation largestPieceVariation) throws SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
-        Iterator sheetLayoutVariationsIterator = this.layoutVariations.iterator();
-        if(!sheetLayoutVariationsIterator.hasNext()) this.layoutVariations.add(new LayoutVariation());
-        LayoutVariation layoutVariation = (LayoutVariation) sheetLayoutVariationsIterator.next();
-        while (sheetLayoutVariationsIterator.hasNext() && !layoutVariation.isEnoughFreeArea(largestPieceVariation)) {
-            layoutVariation = (LayoutVariation) sheetLayoutVariationsIterator.next();
-        }
-        return layoutVariation;
-    }
-
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder()
                 .append(this.getClass().getSimpleName())
                 .append("{")
                 .append("layoutVariations=");
-        if(layoutVariations == null) output.append("null");
+        if (layoutVariations == null) output.append("null");
         else {
             output.append("TreeSet<LayoutVariation>{");
-            for (LayoutVariation layoutVariation : layoutVariations) {
-                output.append(layoutVariation.toString());
+            Iterator iterator = layoutVariations.iterator();
+            while (iterator.hasNext()) {
+                output.append(iterator.next().toString());
+                if (iterator.hasNext()) output.append(", ");
             }
             output.append("}");
         }
@@ -73,19 +56,19 @@ public class Solution implements Comparable<Solution> {
         StringBuilder output = new StringBuilder()
                 .append(this.getClass().getSimpleName())
                 .append("{\n");
-        output = appendByTab(output, level+1)
+        output = appendByTab(output, level + 1)
                 .append("layoutVariations=");
-        if(this.layoutVariations == null) output.append("null");
+        if (this.layoutVariations == null) output.append("null");
         else {
             output.append("TreeSet<LayoutVariation>{");
             for (LayoutVariation layoutVariation : layoutVariations) {
                 output.append("\n");
-                output = appendByTab(output, level+2);
-                output.append(layoutVariation.toString(level+2));
+                output = appendByTab(output, level + 2);
+                output.append(layoutVariation.toString(level + 2));
             }
-            if(!this.layoutVariations.isEmpty()) {
+            if (!this.layoutVariations.isEmpty()) {
                 output.append("\n");
-                output = appendByTab(output, level+1);
+                output = appendByTab(output, level + 1);
             }
             output.append("}\n");
         }
@@ -102,13 +85,29 @@ public class Solution implements Comparable<Solution> {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            return new Solution(this);
+            try {
+                return new Solution(this);
+            } catch (SheetSizeException | CornersOnSidesShareNoCoordinateException | BadCoordinateValueException | NegativePiecePointsException | CornerNotOnSideException | SheetAmountExceededLimitException | PieceVariationsNotInitiatedException | PieceCanNotFitIntoLayoutException | BadAmountOfCoordinatesFoundException | CutCaseNullArgumentException | LayoutFactoryNotInitiatedException ex) {
+                throw new CloneNotSupportedException(ex.getMessage());
+            }
         }
     }
 
     @Override
     public int compareTo(Solution other) {
-        return other.getPointSum() - this.getPointSum();
+        int comparison = other.getPointSum() - this.getPointSum();
+        if (comparison == 0) comparison = other.getLayoutVariations().size() - this.getLayoutVariations().size();
+        if (comparison == 0) {
+            Iterator otherIterator = other.getLayoutVariations().iterator();
+            Iterator thisIterator = this.getLayoutVariations().iterator();
+            while (otherIterator.hasNext() && thisIterator.hasNext()) {
+                LayoutVariation otherLayoutVariation = (LayoutVariation) otherIterator.next();
+                LayoutVariation thisLayoutVariation = (LayoutVariation) thisIterator.next();
+                comparison = thisLayoutVariation.compareTo(otherLayoutVariation);
+                if (comparison != 0) break;
+            }
+        }
+        return comparison;
     }
 
     public int getPointSum() {

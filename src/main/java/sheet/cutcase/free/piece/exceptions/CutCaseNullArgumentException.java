@@ -1,4 +1,4 @@
-package cutter.exceptions;
+package sheet.cutcase.free.piece.exceptions;
 
 import sheet.FreePieceVariation;
 import sheet.PieceVariation;

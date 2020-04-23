@@ -25,7 +25,7 @@ public class PieceVariationTest implements StaticLayoutFactory.InterfaceTestingS
     @DisplayName("rotate Sheet Piece")
     void rotateSheetPiece() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, CloneNotSupportedException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
-        Piece piece = StaticPieceFactory.getPieceFactory().getSheetPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
+        Piece piece = StaticPieceFactory.getPieceFactory().getPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
         PieceVariation pieceVariation1 = new PieceVariation(piece);
         PieceVariation pieceVariation2 = new PieceVariation(piece);
         int previousWidth = piece.getWidth();
@@ -44,7 +44,7 @@ public class PieceVariationTest implements StaticLayoutFactory.InterfaceTestingS
     @DisplayName("rotate Sheet Piece Variation 1")
     void rotateSheetPieceVariation1() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, CloneNotSupportedException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
-        Piece piece = StaticPieceFactory.getPieceFactory().getSheetPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
+        Piece piece = StaticPieceFactory.getPieceFactory().getPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
         PieceVariation pieceVariation1 = new PieceVariation(piece);
         PieceVariation pieceVariation2 = new PieceVariation(piece);
         int previousWidth = piece.getWidth();
@@ -63,7 +63,7 @@ public class PieceVariationTest implements StaticLayoutFactory.InterfaceTestingS
     @DisplayName("rotate Sheet Piece Variation 2")
     void rotateSheetPieceVariation2() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, CloneNotSupportedException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
-        Piece piece = StaticPieceFactory.getPieceFactory().getSheetPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
+        Piece piece = StaticPieceFactory.getPieceFactory().getPiece(StaticPieceFactoryTest.DEFAULT_WIDTH, StaticPieceFactoryTest.DEFAULT_HEIGHT, StaticPieceFactoryTest.DEFAULT_POINTS);
         PieceVariation pieceVariation1 = new PieceVariation(piece);
         PieceVariation pieceVariation2 = new PieceVariation(piece);
         int previousWidth = piece.getWidth();

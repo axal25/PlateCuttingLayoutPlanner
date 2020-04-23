@@ -97,7 +97,7 @@ public class InputParser {
                         new StringBuilder().append("Could not parse sheet piece. ").append(e.getMessage()).toString()
                 );
             }
-            pieces[j] = StaticPieceFactory.getPieceFactory().getSheetPiece(
+            pieces[j] = StaticPieceFactory.getPieceFactory().getPiece(
                     sheetPieceIWidth,
                     sheetPieceIHeight,
                     sheetPieceIPoints

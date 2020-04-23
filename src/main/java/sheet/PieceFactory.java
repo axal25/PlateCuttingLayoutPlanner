@@ -8,7 +8,7 @@ public class PieceFactory extends SheetFactory {
         super.sheetCount = 0;
     }
 
-    public Piece getSheetPiece(int width, int height, int points) throws SheetSizeException, NegativePiecePointsException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    public Piece getPiece(int width, int height, int points) throws SheetSizeException, NegativePiecePointsException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
         try {
             checkIfSheetCountExceededLimit();
             return new Piece(super.sheetCount++, width, height, points);

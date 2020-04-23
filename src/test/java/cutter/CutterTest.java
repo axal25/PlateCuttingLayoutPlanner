@@ -1,13 +1,17 @@
 package cutter;
 
 import coords.exceptions.BadCoordinateValueException;
-import cutter.exceptions.CutCaseNullArgumentException;
 import main.MainTest;
 import org.junit.jupiter.api.*;
 import parser.exceptions.BadAmountOfInputArgsException;
+import parser.exceptions.NullSolutionException;
 import sheet.Piece;
 import sheet.StaticLayoutFactory;
 import sheet.StaticPieceFactory;
+import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
+import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
+import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
+import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
 import sheet.exceptions.*;
 import sheet.sort.strategy.PieceSortStrategy;
 
@@ -41,12 +45,12 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Order(2)
     @DisplayName("Sort Pieces Default (LONGEST SIDE DESC) Strategy")
     void cutterSortDefault() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
-        assertEquals(PieceSortStrategy.LONGEST_SIDE_DESC, this.getPieceSortStrategy());
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, this.getPieceSortStrategy());
         this.setPieceSortStrategy(PieceSortStrategy.LONGEST_SIDE_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousLongestSideIsLargerThanOrEqualToCurrent(pieces[i-1], pieces[i]);
+            assertPreviousLongestSideIsLargerThanOrEqualToCurrent(pieces[i - 1], pieces[i]);
         }
     }
 
@@ -58,13 +62,13 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousAreaIsLargerThanOrEqualToCurrent(pieces[i-1], pieces[i]);
+            assertPreviousAreaIsLargerThanOrEqualToCurrent(pieces[i - 1], pieces[i]);
         }
     }
 
     void assertPreviousAreaIsLargerThanOrEqualToCurrent(Piece prev, Piece cur) {
-        final int prevArea = prev.getHeight()*prev.getWidth();
-        final int curArea = cur.getHeight()*cur.getWidth();
+        final int prevArea = prev.getHeight() * prev.getWidth();
+        final int curArea = cur.getHeight() * cur.getWidth();
         org.hamcrest.MatcherAssert.assertThat(
                 prevArea,
                 org.hamcrest.Matchers.greaterThanOrEqualTo(curArea)
@@ -80,7 +84,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousLongestSideIsLargerThanOrEqualToCurrent(pieces[i-1], pieces[i]);
+            assertPreviousLongestSideIsLargerThanOrEqualToCurrent(pieces[i - 1], pieces[i]);
         }
     }
 
@@ -102,7 +106,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousHeightOrWidthIsLongerThanOrEqualToCurrent(pieces[i-1].getHeight(), pieces[i].getHeight());
+            assertPreviousHeightOrWidthIsLongerThanOrEqualToCurrent(pieces[i - 1].getHeight(), pieces[i].getHeight());
         }
     }
 
@@ -114,7 +118,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousHeightOrWidthIsLongerThanOrEqualToCurrent(pieces[i-1].getWidth(), pieces[i].getWidth());
+            assertPreviousHeightOrWidthIsLongerThanOrEqualToCurrent(pieces[i - 1].getWidth(), pieces[i].getWidth());
         }
     }
 
@@ -134,7 +138,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousPointsToAreaRatioIsLargerThanOrEqualToCurrent(pieces[i-1], pieces[i]);
+            assertPreviousPointsToAreaRatioIsLargerThanOrEqualToCurrent(pieces[i - 1], pieces[i]);
         }
     }
 
@@ -150,7 +154,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
 
     private double getPointsToAreaRatioDesc(Piece piece) {
         final int pieceArea = piece.getHeight() * piece.getWidth();
-        return ((double) piece.getPoints())/((double) pieceArea);
+        return ((double) piece.getPoints()) / ((double) pieceArea);
     }
 
     @Test
@@ -161,7 +165,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
         for (int i = 1; i < pieces.length; i++) {
-            assertPreviousPointsToLongestSideRatioIsLargerThanOrEqualToCurrent(pieces[i-1], pieces[i]);
+            assertPreviousPointsToLongestSideRatioIsLargerThanOrEqualToCurrent(pieces[i - 1], pieces[i]);
         }
     }
 
@@ -177,19 +181,60 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
 
     private double getPointsToLongestSideRatioDesc(Piece piece) {
         final int pieceLongestSide = Math.max(piece.getHeight(), piece.getWidth());
-        return ((double) piece.getPoints())/((double) pieceLongestSide);
+        return ((double) piece.getPoints()) / ((double) pieceLongestSide);
     }
 
     @Test
     @Order(9)
     @DisplayName("Developing test")
-    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException {
+    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, PieceSortStrategyNotInitiatedException {
+        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
         Cutter cutter = new Cutter(ARGS);
-        cutter.cut();
+        String output = cutter.cut();
+        System.out.println("Solutions ----------------------------------------------------------------");
         for (Solution solution : cutter.getSolutions()) {
             System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             System.out.println(solution.toString(0));
             System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
         }
+        System.out.println("output: \n\r" + output);
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+        assertEquals(4, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+        assertEquals(-1, cutter.getBestSolution().getPointSum());
+        assertEquals(7, cutter.getBestSolution().getPointSum());
     }
+
+    @Test
+    @Order(10)
+    @DisplayName("Best solution == no cutting")
+    void cutterBestSolutionForNoCutting() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, PieceSortStrategyNotInitiatedException {
+        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
+        String[] noPointsArgs = {
+                "100", "3",
+                "10",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+                "100", "2", "1",
+        };
+        Cutter cutter = new Cutter(noPointsArgs);
+        String output = cutter.cut();
+        System.out.println("Solutions ----------------------------------------------------------------");
+        for (Solution solution : cutter.getSolutions()) {
+            System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+            System.out.println(solution.toString(0));
+            System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
+        }
+        System.out.println("output: \n\r" + output);
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+        assertEquals(0, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+        assertEquals(0, cutter.getBestSolution().getPointSum());
+    }
+
 }

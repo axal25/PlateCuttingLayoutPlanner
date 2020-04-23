@@ -1,5 +1,6 @@
 package main;
 
+import cutter.Solution;
 import org.junit.jupiter.api.*;
 import replaced.out.MainWithReplacedOut;
 import sheet.*;
@@ -12,7 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory {
-    /** String[] args:
+    /**
+     * String[] args:
      * 10 10 - płyta o wymiarach 10 x 10
      * 8     - 8 blach
      * 6 6 9 - blacha 0, wymar 6x6 za 9 punktów
@@ -27,16 +29,17 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     public static String[] ARGS = {
             "10", "10",
             "8",
-            "6", "6", "9",
-            "7", "4", "3",
-            "2", "5", "5",
-            "2", "3", "7",
-            "5", "8", "4",
-            "3", "2", "1",
-            "4", "2", "1",
-            "4", "2", "1"
+            "6", "6", "9", // id: 0
+            "7", "4", "3", // id: 1
+            "2", "5", "5", // id: 2
+            "2", "3", "7", // id: 3
+            "5", "8", "4", // id: 4
+            "3", "2", "1", // id: 5
+            "4", "2", "1", // id: 6
+            "4", "2", "1"  // id: 7
     };
-    /** String output:
+    /**
+     * String output:
      * 5       - mamy 5 blach wynikowych
      * 1 H 0 0 - w punkcie(x,y): 0,0 umieszczamy horyzontalnie płytę o id 1, wymiary 7x4 za 3 punkty
      * 0 H 0 4 - w punkcie(x,y): 0,4 umieszczamy horyzontalnie płytę o id 0, wymiary 6x6 za 9 punktów
@@ -171,7 +174,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     void Main_StaticSheetPieceFactory_initiation_exception() {
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
         assertThrows(LayoutFactoryNotInitiatedException.class, () -> {
-            Piece piece = pieceFactory.getSheetPiece(
+            Piece piece = pieceFactory.getPiece(
                     StaticPieceFactoryTest.DEFAULT_WIDTH,
                     StaticPieceFactoryTest.DEFAULT_HEIGHT,
                     StaticPieceFactoryTest.DEFAULT_POINTS
@@ -185,7 +188,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     void Main_SheetPiece_visibility() throws SheetSizeException, NegativePiecePointsException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutFactoryAlreadyInitiatedException {
         StaticLayoutFactory.initLayoutFactor(StaticPieceFactoryTest.DEFAULT_WIDTH + 1, StaticPieceFactoryTest.DEFAULT_HEIGHT + 1);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        Piece piece = pieceFactory.getSheetPiece(
+        Piece piece = pieceFactory.getPiece(
                 StaticPieceFactoryTest.DEFAULT_WIDTH,
                 StaticPieceFactoryTest.DEFAULT_HEIGHT,
                 StaticPieceFactoryTest.DEFAULT_POINTS
@@ -230,9 +233,18 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     @Test
     @Order(99)
     @DisplayName("Example from PDF (input & output data)")
-    void new_MainWithReplacedOut_no_args_constructor_main_PDF_example_args_and_output() {
+    void new_MainWithReplacedOut_no_args_constructor_main_PDF_example_args_and_output() throws PieceSortStrategyNotInitiatedException {
         MainWithReplacedOut main = new MainWithReplacedOut();
         main.main(ARGS);
-//        assertEquals(EXPECTED_OUTPUT, main.getByteArrayOutputStream().toString());
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+        assertEquals(EXPECTED_OUTPUT, main.getByteArrayOutputStream().toString());
+    }
+
+    public static int getAmountOfPieceVariations(Solution solution) {
+        int amountOfPieceVariations = 0;
+        for (LayoutVariation layoutVariation : solution.getLayoutVariations()) {
+            amountOfPieceVariations += layoutVariation.getPieceVariations().size();
+        }
+        return amountOfPieceVariations;
     }
 }

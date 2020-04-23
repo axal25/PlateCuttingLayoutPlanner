@@ -3,10 +3,13 @@ package sheet;
 import sheet.exceptions.*;
 import sheet.sort.strategy.PieceSortStrategy;
 
-import static sheet.StaticLayoutFactory.*;
+import java.util.Objects;
+
+import static sheet.StaticLayoutFactory.getLayoutFactory;
 
 public class Piece extends Sheet implements Comparable<Piece> {
-    static PieceSortStrategy pieceSortStrategy = PieceSortStrategy.LONGEST_SIDE_DESC;
+    public static PieceSortStrategy DEFAULT_PIECE_SORT_STRATEGY = PieceSortStrategy.LONGEST_SIDE_DESC;
+    static PieceSortStrategy pieceSortStrategy = DEFAULT_PIECE_SORT_STRATEGY;
     private int points;
 
     Piece(int id, int width, int height, int points) throws SheetSizeException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
@@ -20,7 +23,7 @@ public class Piece extends Sheet implements Comparable<Piece> {
     }
 
     public static PieceSortStrategy getPieceSortStrategy() throws PieceSortStrategyNotInitiatedException {
-        if(pieceSortStrategy == null)
+        if (pieceSortStrategy == null)
             throw new PieceSortStrategyNotInitiatedException(
                     StaticPieceFactory.class.getSimpleName(),
                     "getPieceSortStrategy()",
@@ -47,12 +50,13 @@ public class Piece extends Sheet implements Comparable<Piece> {
         final int layoutShorterSide = Math.min(getLayoutFactory().getWidth(), getLayoutFactory().getHeight());
 //        final int layoutArea = getLayoutFactory().getWidth() * getLayoutFactory().getHeight();
 //        final double layoutDiagonal = Math.sqrt(Math.pow(getLayoutFactory().getWidth(), 2) + Math.pow(getLayoutFactory().getHeight(), 2));
-        if(/*pieceArea <= layoutArea && pieceDiagonal <= layoutDiagonal &&*/ pieceLongestSide <= layoutLongestSide && pieceShorterSide <= layoutShorterSide) return true;
+        if (/*pieceArea <= layoutArea && pieceDiagonal <= layoutDiagonal &&*/ pieceLongestSide <= layoutLongestSide && pieceShorterSide <= layoutShorterSide)
+            return true;
         return false;
     }
 
     void setPoints(int points) throws NegativePiecePointsException {
-        if(points < 0) throw new NegativePiecePointsException(
+        if (points < 0) throw new NegativePiecePointsException(
                 this.getClass().getSimpleName(),
                 "<init>",
                 new StringBuilder()
@@ -66,6 +70,58 @@ public class Piece extends Sheet implements Comparable<Piece> {
 
     public int getPoints() {
         return this.points;
+    }
+
+    private double getPointsToLongestSideRatioDesc(Piece piece) {
+        final int pieceLongestSide = Math.max(piece.getHeight(), piece.getWidth());
+        return ((double) piece.points) / ((double) pieceLongestSide);
+    }
+
+    private int getPointsToLongestSideRatioDescDifference(Piece piece1, Piece piece2) {
+        final double answerLongestSideDouble = getPointsToLongestSideRatioDesc(piece2) - getPointsToLongestSideRatioDesc(piece1);
+        if (answerLongestSideDouble >= 0) return (int) Math.ceil(answerLongestSideDouble);
+        else return (int) Math.floor(answerLongestSideDouble);
+    }
+
+    private double getPointsToAreaRatioDesc(Piece piece) {
+        final int pieceArea = piece.getHeight() * piece.getWidth();
+        return ((double) piece.points) / ((double) pieceArea);
+    }
+
+    private int getPointsToAreaRatioDescDifference(Piece piece1, Piece piece2) {
+        final double answerAreaDouble = getPointsToAreaRatioDesc(piece2) - getPointsToAreaRatioDesc(piece1);
+        if (answerAreaDouble >= 0) return (int) Math.ceil(answerAreaDouble);
+        else return (int) Math.floor(answerAreaDouble);
+    }
+
+    public void rotate() {
+        int prevWidth = this.getWidth();
+        this.setWidth(this.getHeight());
+        this.setHeight(prevWidth);
+    }
+
+    void validate() throws LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+        if (!isCanFitIntoSheetLayout()) throw new PieceCanNotFitIntoLayoutException(
+                Piece.class.getSimpleName(),
+                "validate()",
+                "Piece cannot fit into into Layout."
+        );
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if (this == otherObject) return true;
+        if (!(otherObject instanceof Piece)) return false;
+        Piece otherPiece = (Piece) otherObject;
+        return this.getHeight() == otherPiece.getHeight() &&
+                this.getWidth() == otherPiece.getWidth() &&
+                this.getId() == otherPiece.getId() &&
+                this.points == otherPiece.getPoints();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getPoints());
     }
 
     @Override
@@ -90,8 +146,8 @@ public class Piece extends Sheet implements Comparable<Piece> {
                 return otherLongestSide - thisLongestSide;
 
             case AREA_DESC:
-                final int thisArea = this.getHeight()*this.getWidth();
-                final int otherArea = other.getHeight()*other.getWidth();
+                final int thisArea = this.getHeight() * this.getWidth();
+                final int otherArea = other.getHeight() * other.getWidth();
                 return otherArea - thisArea;
 
             case POINTS_TO_LONGEST_SIDE_RATIO_DESC:
@@ -103,28 +159,6 @@ public class Piece extends Sheet implements Comparable<Piece> {
             default:
                 return defaultAnswer;
         }
-    }
-
-    private double getPointsToLongestSideRatioDesc(Piece piece) {
-        final int pieceLongestSide = Math.max(piece.getHeight(), piece.getWidth());
-        return ((double) piece.points)/((double) pieceLongestSide);
-    }
-
-    private int getPointsToLongestSideRatioDescDifference(Piece piece1, Piece piece2) {
-        final double answerLongestSideDouble = getPointsToLongestSideRatioDesc(piece2) - getPointsToLongestSideRatioDesc(piece1);
-        if(answerLongestSideDouble >= 0) return (int) Math.ceil(answerLongestSideDouble);
-        else return (int) Math.floor(answerLongestSideDouble);
-    }
-
-    private double getPointsToAreaRatioDesc(Piece piece) {
-        final int pieceArea = piece.getHeight() * piece.getWidth();
-        return ((double) piece.points)/((double) pieceArea);
-    }
-
-    private int getPointsToAreaRatioDescDifference(Piece piece1, Piece piece2) {
-        final double answerAreaDouble = getPointsToAreaRatioDesc(piece2) - getPointsToAreaRatioDesc(piece1);
-        if(answerAreaDouble >= 0) return (int) Math.ceil(answerAreaDouble);
-        else return (int) Math.floor(answerAreaDouble);
     }
 
     @Override
@@ -149,12 +183,6 @@ public class Piece extends Sheet implements Comparable<Piece> {
         }
     }
 
-    public void rotate() {
-        int prevWidth = this.getWidth();
-        this.setWidth(this.getHeight());
-        this.setHeight(prevWidth);
-    }
-
     @Override
     public String toString() {
         return new StringBuilder()
@@ -172,21 +200,14 @@ public class Piece extends Sheet implements Comparable<Piece> {
         default void setPieceSortStrategy(PieceSortStrategy pieceSortStrategy) {
             Piece.setPieceSortStrategy(pieceSortStrategy);
         }
+
         default PieceSortStrategy getPieceSortStrategy() {
-            return pieceSortStrategy;
+            return Piece.pieceSortStrategy;
         }
     }
 
     // ONLY FOR SORTING TESTING PURPOSES
     private static void setPieceSortStrategy(PieceSortStrategy pieceSortStrategy) {
         Piece.pieceSortStrategy = pieceSortStrategy;
-    }
-
-    void validate() throws LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
-        if(!isCanFitIntoSheetLayout()) throw new PieceCanNotFitIntoLayoutException(
-                Piece.class.getSimpleName(),
-                "validate()",
-                "Piece cannot fit into into Layout."
-        );
     }
 }

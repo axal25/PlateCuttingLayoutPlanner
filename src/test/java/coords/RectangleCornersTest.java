@@ -36,7 +36,7 @@ public class RectangleCornersTest implements StaticPieceFactory.InterfaceTesting
         } catch(Exception e) {}
         int[] widthArray = null;
         int[] heightArray = null;
-        GetRectangleCoordSAM getRectangleCoordInstance = null;
+        FIGetRectangleCoord getRectangleCoordInstance = null;
         switch(exampleRectanglePosition) {
             case NW:
                 widthArray = NW_WIDTH;
@@ -65,7 +65,7 @@ public class RectangleCornersTest implements StaticPieceFactory.InterfaceTesting
             default:
                 throw new UnsupportedOperationException("Unsupported ExampleRectanglePosition");
         }
-        PieceVariation pieceVariation = new PieceVariation(StaticPieceFactory.getPieceFactory().getSheetPiece(widthArray[index], heightArray[index], 0));
+        PieceVariation pieceVariation = new PieceVariation(StaticPieceFactory.getPieceFactory().getPiece(widthArray[index], heightArray[index], 0));
         pieceVariation.setNorthWesternCoord(getRectangleCoordInstance.getRectangleCoord(index));
         return new RectangleCorners(pieceVariation);
     }
@@ -249,6 +249,6 @@ public class RectangleCornersTest implements StaticPieceFactory.InterfaceTesting
         RectangleCorners nwRectangleCorners = getRectangleCorners(index, ExampleRectanglePosition.NW);
         RectangleCorners seRectangleCorners = getRectangleCorners(index, ExampleRectanglePosition.SE);
 
-        assertEquals(expectedIsInsideOther, nwRectangleCorners.isRectangleInsideOther(seRectangleCorners));
+        assertEquals(expectedIsInsideOther, nwRectangleCorners.isThisRectangleInsideOtherOrOnSides(seRectangleCorners));
     }
 }

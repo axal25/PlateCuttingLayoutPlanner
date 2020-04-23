@@ -2,6 +2,8 @@ package sheet;
 
 import sheet.exceptions.SheetSizeException;
 
+import java.util.Objects;
+
 public abstract class Sheet {
     public static final int MAX_PLATE_HEIGHT = 100;
     public static final int MAX_PLATE_WIDTH = 100;
@@ -10,13 +12,13 @@ public abstract class Sheet {
     private int width, height;
 
     Sheet(int id, int width, int height) throws SheetSizeException {
-        if(width <= 0) throw new SheetSizeException(
+        if (width <= 0) throw new SheetSizeException(
                 this.getClass().getSimpleName(),
                 "<init>",
                 "Width",
                 width
         );
-        if(height <= 0) throw new SheetSizeException(
+        if (height <= 0) throw new SheetSizeException(
                 this.getClass().getSimpleName(),
                 "<init>",
                 "Height",
@@ -31,7 +33,9 @@ public abstract class Sheet {
         return id;
     }
 
-    private void setId() { throw new SecurityException("Not for use"); }
+    private void setId() {
+        throw new SecurityException("Not for use");
+    }
 
     public int getWidth() {
         return width;
@@ -51,6 +55,21 @@ public abstract class Sheet {
 
     public boolean isSquare() {
         return this.width == this.height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sheet)) return false;
+        Sheet sheet = (Sheet) o;
+        return getId() == sheet.getId() &&
+                getWidth() == sheet.getWidth() &&
+                getHeight() == sheet.getHeight();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getWidth(), getHeight());
     }
 
     @Override

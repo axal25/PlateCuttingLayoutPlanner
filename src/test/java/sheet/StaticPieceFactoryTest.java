@@ -44,12 +44,12 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
     void singleFactoryFollowingIds() throws SheetSizeException, NegativePiecePointsException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutFactoryAlreadyInitiatedException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        int currentId = pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
+        int currentId = pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
         assertEquals(0, currentId);
         Piece[] pieces = new Piece[10];
         for (int i = 0; i < pieces.length; i++) {
             currentId++;
-            pieces[i] = pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
+            pieces[i] = pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
             String currentPieces1toString = getSheetPieceToString(currentId, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
             assertEquals(currentPieces1toString, pieces[i].toString());
         }
@@ -64,14 +64,14 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
         PieceFactory pieceFactory2 = StaticPieceFactory.getPieceFactory();
         Piece[] pieces1 = new Piece[10];
         Piece[] pieces2 = new Piece[10];
-        int currentId = pieceFactory1.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
+        int currentId = pieceFactory1.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
         assertEquals(0, currentId);
         for (int i = 0; i < pieces1.length; i++) {
-            pieces1[i] = pieceFactory1.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
+            pieces1[i] = pieceFactory1.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
         }
 
         for (int i = 0; i < pieces2.length; i++) {
-            pieces2[i] = pieceFactory2.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
+            pieces2[i] = pieceFactory2.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
         }
 
         for (int i = 0; i < pieces1.length && i < pieces2.length; i++) {
@@ -93,13 +93,13 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
         PieceFactory pieceFactory2 = StaticPieceFactory.getPieceFactory();
         Piece[] pieces1 = new Piece[10];
         Piece[] pieces2 = new Piece[10];
-        int currentId = pieceFactory1.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
+        int currentId = pieceFactory1.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId();
         assertEquals(0, currentId);
         currentId++;
 
         for (int i = 0; i < pieces1.length && i < pieces2.length; i++) {
-            pieces1[i] = pieceFactory1.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
-            pieces2[i] = pieceFactory2.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
+            pieces1[i] = pieceFactory1.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
+            pieces2[i] = pieceFactory2.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);
             assertNotEquals(pieces1[i].toString(), pieces2.toString());
             String currentPieces1toString = getSheetPieceToString(currentId++, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS);;
             assertEquals(currentPieces1toString, pieces1[i].toString());
@@ -114,7 +114,7 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
     void staticPieceFactory_widthException() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        assertThrows(SheetSizeException.class, () -> pieceFactory.getSheetPiece(0, 2, 3));
+        assertThrows(SheetSizeException.class, () -> pieceFactory.getPiece(0, 2, 3));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
     void staticPieceFactory_heightException() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        assertThrows(SheetSizeException.class, () -> pieceFactory.getSheetPiece(1, -2, 3));
+        assertThrows(SheetSizeException.class, () -> pieceFactory.getPiece(1, -2, 3));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
     void staticPieceFactory_pointsException() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException {
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        assertThrows(NegativePiecePointsException.class, () -> pieceFactory.getSheetPiece(1, 2, -3));
+        assertThrows(NegativePiecePointsException.class, () -> pieceFactory.getPiece(1, 2, -3));
     }
 
     @Test
@@ -141,8 +141,8 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
     void staticPieceFactory_widthOrHeightLargerThanLayouts() throws LayoutFactoryAlreadyInitiatedException, SheetSizeException {
         StaticLayoutFactory.initLayoutFactor(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
-        assertThrows(PieceCanNotFitIntoLayoutException.class, () -> pieceFactory.getSheetPiece(DEFAULT_WIDTH+1, DEFAULT_HEIGHT, 1));
-        assertThrows(PieceCanNotFitIntoLayoutException.class, () -> pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT+1, 1));
+        assertThrows(PieceCanNotFitIntoLayoutException.class, () -> pieceFactory.getPiece(DEFAULT_WIDTH+1, DEFAULT_HEIGHT, 1));
+        assertThrows(PieceCanNotFitIntoLayoutException.class, () -> pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT+1, 1));
     }
 
     @Test
@@ -152,13 +152,13 @@ public class StaticPieceFactoryTest implements StaticPieceFactory.InterfaceTesti
         StaticLayoutFactory.initLayoutFactor(StaticLayoutFactoryTest.DEFAULT_WIDTH, StaticLayoutFactoryTest.DEFAULT_HEIGHT);
         PieceFactory pieceFactory = StaticPieceFactory.getPieceFactory();
         for (
-                int i = pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId() + 1;
+                int i = pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId() + 1;
                 i < SheetFactory.MAX_SHEET_AMOUNT+1;
                 i++
         ) {
             if(i < SheetFactory.MAX_SHEET_AMOUNT) {
-                assertEquals(i, pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId());
-            } else assertThrows(SheetAmountExceededLimitException.class, () -> pieceFactory.getSheetPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS));
+                assertEquals(i, pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS).getId());
+            } else assertThrows(SheetAmountExceededLimitException.class, () -> pieceFactory.getPiece(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_POINTS));
         }
     }
 }
