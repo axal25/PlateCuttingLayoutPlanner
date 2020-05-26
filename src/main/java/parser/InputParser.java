@@ -20,7 +20,7 @@ public class InputParser {
                 InputParser.class.getSimpleName(),
                 functionName,
                 new StringBuilder()
-                        .append("Amount of arguments must equal to 2 (args.length == 2) or be divisible by 3 (")
+                        .append("Amount of arguments must be equal to 2 (args.length == 2) or be divisible by 3 (")
                         .append(division)
                         .append(" == 0). Amount of arguments detected: ")
                         .append(args.length)

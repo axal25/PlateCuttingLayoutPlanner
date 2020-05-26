@@ -2,7 +2,7 @@ package sheet;
 
 import coords.RectangleCorners;
 import coords.exceptions.BadCoordinateValueException;
-import cutter.Solution;
+import solution.Solution;
 import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
 import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
 import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
@@ -21,12 +21,16 @@ public class LayoutVariation implements Comparable<LayoutVariation> {
     private int freeArea;
     private int points;
 
-    public LayoutVariation() throws LayoutFactoryNotInitiatedException, SheetAmountExceededLimitException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
-        this.layout = StaticLayoutFactory.getLayoutFactory().getLayout();
+    public LayoutVariation() throws LayoutFactoryNotInitiatedException, SheetAmountExceededLimitException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
+        this(StaticLayoutFactory.getLayoutFactory().getLayout());
+    }
+
+    public LayoutVariation(Layout layout) throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, NotAllCornersFoundException, BadCoordinateValueException {
+        this.layout = layout;
         this.freeArea = this.layout.getHeight() * this.layout.getWidth();
         this.points = -this.freeArea;
         this.pieceVariations = new LinkedHashSet<>();
-        this.setFreePieceVariations(null);
+        this.updateFreePieceVariations(null);
     }
 
     private LayoutVariation(Layout layout, int freeArea, int points, LinkedHashSet<PieceVariation> pieceVariations, TreeSet<FreePieceVariation> freePieceVariations) throws CloneNotSupportedException {
@@ -37,7 +41,7 @@ public class LayoutVariation implements Comparable<LayoutVariation> {
         for (PieceVariation pieceVariation : pieceVariations) {
             this.pieceVariations.add((PieceVariation) pieceVariation.clone());
         }
-        this.freePieceVariations = new TreeSet<>();
+        this.freePieceVariations = new TreeSet<FreePieceVariation>();
         for (FreePieceVariation freePieceVariation : freePieceVariations) {
             this.freePieceVariations.add((FreePieceVariation) freePieceVariation.clone());
         }
@@ -87,11 +91,11 @@ public class LayoutVariation implements Comparable<LayoutVariation> {
         return true;
     }
 
-    public boolean add(PieceVariation pieceVariation) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    public boolean add(PieceVariation pieceVariation) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         if (isEnoughFreeArea(pieceVariation) && isInsideLayoutVariation(pieceVariation) && isGivenAreaFree(pieceVariation)) {
             this.pieceVariations.add(pieceVariation);
             this.freeArea -= pieceVariation.getArea();
-            setFreePieceVariations(pieceVariation);
+            updateFreePieceVariations(pieceVariation);
             this.points += pieceVariation.getPiece().getPoints() + (pieceVariation.getPiece().getWidth() * pieceVariation.getPiece().getHeight());
             return true;
         }
@@ -104,14 +108,14 @@ public class LayoutVariation implements Comparable<LayoutVariation> {
      * so if PieceVariation is overlapping one of freePieceVariations but doesn't fit inside
      * it fits wholly inside another, but only partially inside this one
      */
-    private void setFreePieceVariations(PieceVariation pieceVariation) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    private void updateFreePieceVariations(PieceVariation pieceVariation) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         if (pieceVariation == null) {
             if (pieceVariations != null && !pieceVariations.isEmpty()) throw new PieceVariationsNotInitiatedException(
                     this.getClass().getSimpleName(),
                     "setFreePieceVariations(PieceVariation pieceVariation)",
                     "PieceVariation must be given or pieceVariations inside LayoutVariation must be initiated."
             );
-            this.freePieceVariations = new TreeSet<>();
+            this.freePieceVariations = new TreeSet<FreePieceVariation>();
             this.freePieceVariations.add(FreePieceVariation.getNewFreePieceVariation(0, this.layout.getWidth(), this.layout.getHeight(), this.points, 0, 0));
         } else {
             TreeSet<FreePieceVariation> fpvsToRemove = new TreeSet<>();

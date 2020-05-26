@@ -3,8 +3,8 @@ package sheet;
 import coords.Coordinate;
 import coords.RectangleCorners;
 import coords.exceptions.BadCoordinateValueException;
-import cutter.Solution;
 import orientation.Orientation;
+import solution.Solution;
 
 import java.util.Objects;
 import java.util.TreeSet;
@@ -48,25 +48,22 @@ public class PieceVariation implements Comparable<PieceVariation> {
     }
 
     public Coordinate[] getXNotOverlappingCornersOfThisOnly(PieceVariation other, int amountOfNotOverlappingCorners) throws BadCoordinateValueException {
+        Coordinate[] thisCoords = new RectangleCorners(this).toCoordinateArray();
+        Coordinate[] otherCoords = new RectangleCorners(other).toCoordinateArray();
         Coordinate[] xNotOverlappingCorners = new Coordinate[amountOfNotOverlappingCorners];
-        int index = 0;
-        RectangleCorners otherRC = new RectangleCorners(other);
-        RectangleCorners thisRC = new RectangleCorners(this);
-        if (!otherRC.getNWCoord().equals(thisRC.getNWCoord())) {
-            xNotOverlappingCorners[index] = thisRC.getNWCoord();
-            index++;
-        }
-        if (!otherRC.getNECoord().equals(thisRC.getNECoord())) {
-            xNotOverlappingCorners[index] = thisRC.getNECoord();
-            index++;
-        }
-        if (!otherRC.getSECoord().equals(thisRC.getSECoord())) {
-            xNotOverlappingCorners[index] = thisRC.getSECoord();
-            index++;
-        }
-        if (!otherRC.getSWCoord().equals(thisRC.getSWCoord())) {
-            xNotOverlappingCorners[index] = thisRC.getSWCoord();
-            index++;
+        for (int i = 0, j = 0; i < thisCoords.length && i < otherCoords.length; i++) {
+            if (!thisCoords[i].equals(otherCoords[i])) {
+                if (j >= amountOfNotOverlappingCorners)
+                    throw new IndexOutOfBoundsException(
+                            String.format(
+                                    "%s%s",
+                                    String.format("Not matching amount of expected not overlapping corners (%d)", amountOfNotOverlappingCorners),
+                                    String.format(" to actual amount of not overlapping corners found so far (%d).", j)
+                            )
+                    );
+                xNotOverlappingCorners[j] = thisCoords[i];
+                j++;
+            }
         }
         return xNotOverlappingCorners;
     }

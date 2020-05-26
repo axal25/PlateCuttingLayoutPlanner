@@ -1,7 +1,9 @@
-package cutter;
+package solution;
 
 import coords.exceptions.BadCoordinateValueException;
 import sheet.LayoutVariation;
+import sheet.Piece;
+import sheet.PieceVariation;
 import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
 import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
 import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
@@ -14,12 +16,12 @@ import java.util.TreeSet;
 public class Solution implements Comparable<Solution> {
     private TreeSet<LayoutVariation> layoutVariations;
 
-    public Solution() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, CornerNotOnSideException {
+    public Solution() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, CornerNotOnSideException, NotAllCornersFoundException {
         this.layoutVariations = new TreeSet<>();
-        this.getLayoutVariations().add(new LayoutVariation());
+//        this.layoutVariations.add(new LayoutVariation());
     }
 
-    public Solution(Solution template) throws CloneNotSupportedException, SheetSizeException, CornersOnSidesShareNoCoordinateException, BadCoordinateValueException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException {
+    public Solution(Solution template) throws CloneNotSupportedException {
         this.layoutVariations = new TreeSet<>();
         for (LayoutVariation layoutVariation : template.layoutVariations)
             this.layoutVariations.add((LayoutVariation) layoutVariation.clone());
@@ -31,6 +33,13 @@ public class Solution implements Comparable<Solution> {
 
     public void add(LayoutVariation layoutVariation) {
         this.layoutVariations.add(layoutVariation);
+    }
+
+    public boolean contains(Piece piece) {
+        for (LayoutVariation layoutVariation : this.layoutVariations)
+            for (PieceVariation pieceVariation : layoutVariation.getPieceVariations())
+                if (pieceVariation.getPiece().getId() == piece.getId()) return true;
+        return false;
     }
 
     @Override
@@ -85,11 +94,7 @@ public class Solution implements Comparable<Solution> {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            try {
-                return new Solution(this);
-            } catch (SheetSizeException | CornersOnSidesShareNoCoordinateException | BadCoordinateValueException | NegativePiecePointsException | CornerNotOnSideException | SheetAmountExceededLimitException | PieceVariationsNotInitiatedException | PieceCanNotFitIntoLayoutException | BadAmountOfCoordinatesFoundException | CutCaseNullArgumentException | LayoutFactoryNotInitiatedException ex) {
-                throw new CloneNotSupportedException(ex.getMessage());
-            }
+            return new Solution(this);
         }
     }
 

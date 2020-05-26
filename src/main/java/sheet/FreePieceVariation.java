@@ -2,17 +2,14 @@ package sheet;
 
 import coords.Coordinate;
 import coords.exceptions.BadCoordinateValueException;
-import cutter.Solution;
+import solution.Solution;
 import sheet.cutcase.free.piece.FreePieceCutCase;
 import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
 import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
 import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
 import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
-import sheet.cutcase.piece.PieceCutCase;
-import sheet.exceptions.LayoutFactoryNotInitiatedException;
-import sheet.exceptions.NegativePiecePointsException;
-import sheet.exceptions.PieceCanNotFitIntoLayoutException;
-import sheet.exceptions.SheetSizeException;
+import sheet.cutcase.piece.PieceCutter;
+import sheet.exceptions.*;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,7 +29,9 @@ public class FreePieceVariation extends PieceVariation {
         return new FreePieceVariation(newFreePiece, coordX, coordY);
     }
 
-    public static FreePieceVariation getNewFreePieceVariation(Coordinate[] overLappingFragmentCorners) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException {
+    public static FreePieceVariation getNewFreePieceVariation(Coordinate[] overLappingFragmentCorners) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, NotAllCornersFoundException {
+        int expectedAmountOfCorners = 4;
+        if(overLappingFragmentCorners.length != expectedAmountOfCorners) throw new NotAllCornersFoundException(overLappingFragmentCorners, expectedAmountOfCorners);
         Arrays.sort(overLappingFragmentCorners);
         int width = overLappingFragmentCorners[3].getX() - overLappingFragmentCorners[0].getX();
         int height = overLappingFragmentCorners[3].getY() - overLappingFragmentCorners[0].getY();
@@ -51,12 +50,12 @@ public class FreePieceVariation extends PieceVariation {
      * if PieceVariation is overlapping one of freePieceVariations but doesn't fit inside
      * it fits completely inside another, but only partially inside this one
      */
-    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(PieceVariation pieceVariation) throws BadCoordinateValueException, CutCaseNullArgumentException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(PieceVariation pieceVariation) throws BadCoordinateValueException, CutCaseNullArgumentException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
         if (pieceVariation.isOverlapping(this)) {
             if (!pieceVariation.isInsideOther(this)) {
-                PieceCutCase pieceCutCase = PieceCutCase.getNewPieceCutCase(this, pieceVariation);
-                pieceVariation = pieceCutCase.getFragmentInsideOther(pieceVariation, this);
+                System.out.println(String.format("pieceCutCase.getFragmentInsideOther(pieceVariation, this)\n\t\t\t>>>pieceVariation: %s\n\t\t\t>>> this: %s", pieceVariation.toString(3), this.toString(3)));
+                pieceVariation = PieceCutter.getFragmentOfPvInsideFpv(pieceVariation, this);
             }
             FreePieceCutCase freePieceCutCase = FreePieceCutCase.getNewFreePieceCutCase(this, pieceVariation);
             cutUpFreePieceVariations.addAll(freePieceCutCase.getCutUpFreePieceVariation(this, pieceVariation));

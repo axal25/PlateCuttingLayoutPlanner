@@ -1,6 +1,6 @@
 package parser;
 
-import cutter.Solution;
+import solution.Solution;
 import parser.exceptions.NullSolutionException;
 import sheet.LayoutVariation;
 import sheet.PieceVariation;

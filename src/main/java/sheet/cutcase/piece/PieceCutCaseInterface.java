@@ -3,11 +3,8 @@ package sheet.cutcase.piece;
 import coords.exceptions.BadCoordinateValueException;
 import sheet.FreePieceVariation;
 import sheet.PieceVariation;
-import sheet.exceptions.LayoutFactoryNotInitiatedException;
-import sheet.exceptions.NegativePiecePointsException;
-import sheet.exceptions.PieceCanNotFitIntoLayoutException;
-import sheet.exceptions.SheetSizeException;
+import sheet.exceptions.*;
 
 public interface PieceCutCaseInterface {
-    public PieceVariation getFragmentInsideOther(PieceVariation pieceVariation, FreePieceVariation freePieceVariation) throws BadCoordinateValueException, SheetSizeException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, CloneNotSupportedException;
+    public PieceVariation getFragmentOfPvInsideFpv(PieceCutter pieceCutter) throws BadCoordinateValueException, SheetSizeException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NotAllCornersFoundException;
 }

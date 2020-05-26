@@ -9,10 +9,7 @@ import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
 import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
 import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
 import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
-import sheet.exceptions.LayoutFactoryNotInitiatedException;
-import sheet.exceptions.NegativePiecePointsException;
-import sheet.exceptions.PieceCanNotFitIntoLayoutException;
-import sheet.exceptions.SheetSizeException;
+import sheet.exceptions.*;
 
 import java.util.Arrays;
 import java.util.TreeSet;
@@ -28,7 +25,7 @@ public enum FreePieceCutCase implements FreePieceCutCaseInterface {
         }
     }, TWO_OVERLAPPING_CORNERS {
         @Override
-        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CutCaseNullArgumentException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException {
+        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CutCaseNullArgumentException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, NotAllCornersFoundException {
             validateArguments(overriddenFunctionName, freePieceVariation, pieceVariation);
             Coordinate[] pv4NotOverlappingCorners = pieceVariation.getXNotOverlappingCornersOfBoth(freePieceVariation, 4);
             TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
@@ -37,7 +34,7 @@ public enum FreePieceCutCase implements FreePieceCutCaseInterface {
         }
     }, ONE_OVERLAPPING_CORNER {
         @Override
-        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, CutCaseNullArgumentException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException {
+        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, CutCaseNullArgumentException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, NotAllCornersFoundException {
             validateArguments(overriddenFunctionName, freePieceVariation, pieceVariation);
             Coordinate[] fpv3NotOverlappingCorners = freePieceVariation.getXNotOverlappingCornersOfThisOnly(pieceVariation, 3);
             Coordinate[] pv3NotOverlappingCorners = pieceVariation.getXNotOverlappingCornersOfThisOnly(freePieceVariation, 3);
@@ -47,7 +44,7 @@ public enum FreePieceCutCase implements FreePieceCutCaseInterface {
         private TreeSet<FreePieceVariation> getFreePieceVariationsFromThreeNotOverlappingCorners(
                 Coordinate[] fpv3NotOverlappingCorners,
                 Coordinate[] pv3NotOverlappingCorners
-        ) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException {
+        ) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, NotAllCornersFoundException {
             TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
             Coordinate[] fpvNotNextToEachOtherNotOverlapping = get2CornersNotNextToEachOther(fpv3NotOverlappingCorners);
             Coordinate[] pvNotNextToEachOtherNotOverlapping = get2CornersNotNextToEachOther(pv3NotOverlappingCorners);
@@ -136,14 +133,14 @@ public enum FreePieceCutCase implements FreePieceCutCaseInterface {
         }
     }, CORNERS_ON_SIDES {
         @Override
-        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CloneNotSupportedException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, LayoutFactoryNotInitiatedException, CutCaseNullArgumentException, SheetSizeException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CloneNotSupportedException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, LayoutFactoryNotInitiatedException, CutCaseNullArgumentException, SheetSizeException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
             CornersOnSidesFreePieceCutCase cornersOnSidesFreePieceCutCase = CornersOnSidesFreePieceCutCase.getNewCornersOnSidesFreePieceCutCase(freePieceVariation, pieceVariation);
             return cornersOnSidesFreePieceCutCase.getCutUpFreePieceVariation(freePieceVariation, pieceVariation);
         }
     }, CORNERS_INSIDE;
 
     @Override
-    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CutCaseNullArgumentException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws CutCaseNullArgumentException, BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         throw new UnsupportedOperationException("Unimplemented");
     }
 

@@ -33,7 +33,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(1)
     @DisplayName("findSameSizePieceVariation")
-    void findSameSizePieceVariation() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameSizePieceVariation() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(0));
         pieceVariation = layoutVariation.findSameSizePieceVariation(pieceVariation);
@@ -52,7 +52,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
         );
     }
 
-    private static LayoutVariation setupLayoutForFurtherTesting() throws CloneNotSupportedException, BadCoordinateValueException, SheetAmountExceededLimitException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, PieceVariationsNotInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    private static LayoutVariation setupLayoutForFurtherTesting() throws CloneNotSupportedException, BadCoordinateValueException, SheetAmountExceededLimitException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, PieceVariationsNotInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = FreePieceVariationTest.getLayoutVariation(3);
         FreePieceVariation freePieceVariation = layoutVariation.getFreePieceVariations().first();
         PieceVariation pieceVariation = FreePieceVariationTest.getPieceVariation(3);
@@ -83,7 +83,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(1)
     @DisplayName("findSameSizePieceVariation - rotated")
-    void findSameSizePieceVariation_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameSizePieceVariation_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(2));
         pieceVariation = layoutVariation.findSameSizePieceVariation(pieceVariation);
@@ -94,7 +94,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(2)
     @DisplayName("findSameWidthOrHeightPieceVariation - same height")
-    void findSameWidthOrHeightPieceVariation_height() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameWidthOrHeightPieceVariation_height() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(3));
         pieceVariation = layoutVariation.findSameWidthOrHeightPieceVariation(pieceVariation);
@@ -105,7 +105,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(3)
     @DisplayName("findSameWidthOrHeightPieceVariation - same height - rotated")
-    void findSameWidthOrHeightPieceVariation_height_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameWidthOrHeightPieceVariation_height_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(4));
         pieceVariation = layoutVariation.findSameWidthOrHeightPieceVariation(pieceVariation);
@@ -116,7 +116,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(4)
     @DisplayName("findSameWidthOrHeightPieceVariation - same width")
-    void findSameWidthOrHeightPieceVariation_width() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameWidthOrHeightPieceVariation_width() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(5));
         pieceVariation = layoutVariation.findSameWidthOrHeightPieceVariation(pieceVariation);
@@ -127,7 +127,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(5)
     @DisplayName("findSameWidthOrHeightPieceVariation - same width - rotated")
-    void findSameWidthOrHeightPieceVariation_width_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSameWidthOrHeightPieceVariation_width_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(6));
         pieceVariation = layoutVariation.findSameWidthOrHeightPieceVariation(pieceVariation);
@@ -138,7 +138,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(6)
     @DisplayName("findSmallerSizePieceVariation")
-    void findSmallerSizePieceVariation() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSmallerSizePieceVariation() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(7));
         pieceVariation = layoutVariation.findSmallerSizePieceVariation(pieceVariation);
@@ -149,7 +149,7 @@ public class LayoutVariationTest implements StaticPieceFactory.InterfaceTestingS
     @Test
     @Order(7)
     @DisplayName("findSmallerSizePieceVariation - rotated")
-    void findSmallerSizePieceVariation_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException {
+    void findSmallerSizePieceVariation_rotated() throws SheetSizeException, CornersOnSidesShareNoCoordinateException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, NegativePiecePointsException, CornerNotOnSideException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, BadAmountOfCoordinatesFoundException, CutCaseNullArgumentException, BadCoordinateValueException, NotAllCornersFoundException {
         LayoutVariation layoutVariation = setupLayoutForFurtherTesting();
         PieceVariation pieceVariation = new PieceVariation(getPiece(8));
         pieceVariation = layoutVariation.findSmallerSizePieceVariation(pieceVariation);

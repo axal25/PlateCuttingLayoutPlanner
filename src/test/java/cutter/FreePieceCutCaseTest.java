@@ -10,6 +10,7 @@ import org.junit.jupiter.api.*;
 import sheet.*;
 import sheet.cutcase.free.piece.FreePieceCutCase;
 import sheet.exceptions.*;
+import sheet.sort.strategy.PieceSortStrategy;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -17,7 +18,7 @@ import java.util.TreeSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory {
+public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory, Piece.InterfaceTestingPieceSortStrategy {
     public static final int[] LAYOUT_VARIATION_WIDTHS = {15, 15, 15, 15, 15};
     public static final int[] LAYOUT_VARIATION_HEIGHTS = {10, 10, 10, 10, 10};
 
@@ -31,6 +32,7 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
     void setUp() {
         this.resetLayoutFactory();
         this.resetPieceFactory();
+        this.setPieceSortStrategy(PieceSortStrategy.LONGEST_SIDE_DESC);
     }
 
     @AfterEach
@@ -42,7 +44,7 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
     @Test
     @Order(1)
     @DisplayName("getCutCase - exception")
-    void assertGetCutCase() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void assertGetCutCase() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         StaticLayoutFactory.initLayoutFactor(LAYOUT_VARIATION_WIDTHS[0], LAYOUT_VARIATION_HEIGHTS[0]);
         Assertions.assertThrows(CutCaseNullArgumentException.class, () -> FreePieceCutCase.getNewFreePieceCutCase(null, null));
         LayoutVariation layoutVariation = getLayoutVariation(0);
@@ -50,7 +52,7 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
         Assertions.assertThrows(CutCaseNullArgumentException.class, () -> FreePieceCutCase.getNewFreePieceCutCase(freePieceVariation, null));
     }
 
-    public LayoutVariation getLayoutVariation(int index) throws LayoutFactoryNotInitiatedException, SheetAmountExceededLimitException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, PieceVariationsNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    public LayoutVariation getLayoutVariation(int index) throws LayoutFactoryNotInitiatedException, SheetAmountExceededLimitException, SheetSizeException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, BadCoordinateValueException, PieceVariationsNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         try {
             resetLayoutFactory();
             StaticLayoutFactory.initLayoutFactor(LAYOUT_VARIATION_WIDTHS[index], LAYOUT_VARIATION_HEIGHTS[index]);
@@ -76,11 +78,11 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
     @Test
     @Order(2)
     @DisplayName("getCutCase - FOUR_OVERLAPPING_CORNERS")
-    void getCutCase_FOUR_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutCase_FOUR_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertGetCutCase(0, FreePieceCutCase.FOUR_OVERLAPPING_CORNERS);
     }
 
-    FreePieceCutCase getCutCase(int index) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    FreePieceCutCase getCutCase(int index) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         StaticLayoutFactory.initLayoutFactor(LAYOUT_VARIATION_WIDTHS[index], LAYOUT_VARIATION_HEIGHTS[index]);
         LayoutVariation layoutVariation = getLayoutVariation(index);
         final FreePieceVariation freePieceVariation = layoutVariation.getFreePieceVariations().first();
@@ -88,42 +90,42 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
         return FreePieceCutCase.getNewFreePieceCutCase(freePieceVariation, pieceVariation);
     }
 
-    void assertGetCutCase(int index, FreePieceCutCase expectedFreePieceCutCase) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void assertGetCutCase(int index, FreePieceCutCase expectedFreePieceCutCase) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertEquals(expectedFreePieceCutCase, getCutCase(index));
     }
 
     @Test
     @Order(3)
     @DisplayName("getCutCase - TWO_OVERLAPPING_CORNERS")
-    void getCutCase_TWO_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutCase_TWO_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertGetCutCase(1, FreePieceCutCase.TWO_OVERLAPPING_CORNERS);
     }
 
     @Test
     @Order(4)
     @DisplayName("getCutCase - ONE_OVERLAPPING_CORNER")
-    void getCutCase_ONE_OVERLAPPING_CORNER() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutCase_ONE_OVERLAPPING_CORNER() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertGetCutCase(2, FreePieceCutCase.ONE_OVERLAPPING_CORNER);
     }
 
     @Test
     @Order(5)
     @DisplayName("getCutCase - TWO_CORNERS_ON_ONE_SIDE")
-    void getCutCase_TWO_CORNERS_ON_ONE_SIDE() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutCase_TWO_CORNERS_ON_ONE_SIDE() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertGetCutCase(3, FreePieceCutCase.CORNERS_ON_SIDES);
     }
 
     @Test
     @Order(6)
     @DisplayName("getCutCase - CORNERS_INSIDE")
-    void getCutCase_CORNERS_INSIDE() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutCase_CORNERS_INSIDE() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         assertGetCutCase(4, FreePieceCutCase.CORNERS_INSIDE);
     }
 
     @Test
     @Order(7)
     @DisplayName("getCutUpFreePieceVariation - FOUR_OVERLAPPING_CORNERS")
-    void getCutUpFreePieceVariation_FOUR_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutUpFreePieceVariation_FOUR_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         TreeSet<FreePieceVariation> returnedCutUpFreePieceVariations = getCutUpFreePieceVariation(0);
         assertNotNull(returnedCutUpFreePieceVariations);
         assertTrue(returnedCutUpFreePieceVariations.isEmpty());
@@ -131,7 +133,7 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
         cutUpFreePieceVariations.addAll(returnedCutUpFreePieceVariations);
     }
 
-    TreeSet<FreePieceVariation> getCutUpFreePieceVariation(int index) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    TreeSet<FreePieceVariation> getCutUpFreePieceVariation(int index) throws SheetSizeException, BadCoordinateValueException, NegativePiecePointsException, CloneNotSupportedException, SheetAmountExceededLimitException, PieceVariationsNotInitiatedException, PieceCanNotFitIntoLayoutException, CutCaseNullArgumentException, LayoutFactoryNotInitiatedException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         StaticLayoutFactory.initLayoutFactor(LAYOUT_VARIATION_WIDTHS[index], LAYOUT_VARIATION_HEIGHTS[index]);
         LayoutVariation layoutVariation = getLayoutVariation(index);
         final FreePieceVariation freePieceVariation = layoutVariation.getFreePieceVariations().first();
@@ -143,7 +145,7 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
     @Test
     @Order(8)
     @DisplayName("getCutUpFreePieceVariation - TWO_OVERLAPPING_CORNERS")
-    void getCutUpFreePieceVariation_TWO_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutUpFreePieceVariation_TWO_OVERLAPPING_CORNERS() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         TreeSet<FreePieceVariation> returnedCutUpFreePieceVariations = getCutUpFreePieceVariation(1);
         assertEquals(1, returnedCutUpFreePieceVariations.size());
         assertEquals(
@@ -157,17 +159,17 @@ public class FreePieceCutCaseTest implements StaticPieceFactory.InterfaceTesting
     @Test
     @Order(9)
     @DisplayName("getCutUpFreePieceVariation - ONE_OVERLAPPING_CORNER")
-    void getCutUpFreePieceVariation_ONE_OVERLAPPING_CORNER() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    void getCutUpFreePieceVariation_ONE_OVERLAPPING_CORNER() throws BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, LayoutFactoryNotInitiatedException, SheetSizeException, CutCaseNullArgumentException, LayoutFactoryAlreadyInitiatedException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         TreeSet<FreePieceVariation> returnedCutUpFreePieceVariations = getCutUpFreePieceVariation(2);
         assertEquals(2, returnedCutUpFreePieceVariations.size());
         Iterator iterator = returnedCutUpFreePieceVariations.iterator();
         int i = 0;
-        final String[] toStrings = {
+        final String[] expectedToStrings = {
                 "FreePieceVariation{piece=FreePiece{id=0, width=15, height=5, points=-75}, orientation=H, northEasternCoord=Coordinate{x=0, y=5}}",
-                "FreePieceVariation{piece=FreePiece{id=0, width=8, height=10, points=-80}, orientation=V, northEasternCoord=Coordinate{x=7, y=0}}"
+                "FreePieceVariation{piece=FreePiece{id=0, width=8, height=10, points=-80}, orientation=V, northEasternCoord=Coordinate{x=7, y=0}}",
         };
         while(iterator.hasNext()) {
-            assertEquals(toStrings[i], iterator.next().toString());
+            assertEquals(expectedToStrings[i], iterator.next().toString());
             i++;
         }
         TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();

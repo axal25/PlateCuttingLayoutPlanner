@@ -3,17 +3,14 @@ package sheet.cutcase.free.piece;
 import coords.Coordinate;
 import coords.RectangleCorners;
 import coords.exceptions.BadCoordinateValueException;
+import coords.Coordinates;
 import sheet.FreePieceVariation;
 import sheet.PieceVariation;
 import sheet.cutcase.free.piece.exceptions.BadAmountOfCoordinatesFoundException;
 import sheet.cutcase.free.piece.exceptions.CornerNotOnSideException;
 import sheet.cutcase.free.piece.exceptions.CornersOnSidesShareNoCoordinateException;
 import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
-import sheet.exceptions.LayoutFactoryNotInitiatedException;
-import sheet.exceptions.NegativePiecePointsException;
-import sheet.exceptions.PieceCanNotFitIntoLayoutException;
-import sheet.exceptions.SheetSizeException;
-import utils.collection.TreeSetUtils;
+import sheet.exceptions.*;
 
 import java.util.TreeSet;
 
@@ -22,7 +19,7 @@ import static sheet.cutcase.free.piece.FreePieceCutCase.validateArguments;
 public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface {
     TWO_CORNERS_ON_ONE_SIDE {
         @Override
-        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, BadAmountOfCoordinatesFoundException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, BadAmountOfCoordinatesFoundException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
             validateArguments(overriddenFunctionName, freePieceVariation, pieceVariation);
             Coordinate[] cornersNotOnOneSide = get2CornersNotOnOneSide(this.pvRectangleCorners, this.cornersOnSides);
             TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
@@ -31,7 +28,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
             return cutUpFreePieceVariations;
         }
 
-        private TreeSet<FreePieceVariation> getNewFreePieceVariations2CornersOnOneSide(Coordinate[] cornersOnOneSide, RectangleCorners fpvRectangleCorners) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+        private TreeSet<FreePieceVariation> getNewFreePieceVariations2CornersOnOneSide(Coordinate[] cornersOnOneSide, RectangleCorners fpvRectangleCorners) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
             if (cornersOnOneSide[0].getX() == cornersOnOneSide[1].getX())
                 return onSameXGetNewFreePieceVariations2CornersOnOneSideIf(cornersOnOneSide, fpvRectangleCorners);
             if (cornersOnOneSide[0].getY() == cornersOnOneSide[1].getY())
@@ -42,7 +39,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
         private TreeSet<FreePieceVariation> onSameXGetNewFreePieceVariations2CornersOnOneSideIf(
                 Coordinate[] cornersOnOneSide,
                 RectangleCorners fpvRectangleCorners
-        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException {
+        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException, NotAllCornersFoundException {
             int yNorth0Dist = cornersOnOneSide[0].getY() - fpvRectangleCorners.getNWCoord().getY();
             int ySouth0Dist = fpvRectangleCorners.getSECoord().getY() - cornersOnOneSide[0].getY();
             int[] closerFpvYsToCornersOnSide = new int[2];
@@ -67,7 +64,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
                 Coordinate[] cornersOnOneSide,
                 int[] closerFpvYsToCornersOnSide,
                 int differentX
-        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException {
+        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, NotAllCornersFoundException {
             TreeSet<FreePieceVariation> newFreePieceVariations2CornersOnOneSide = new TreeSet<>();
             for (int i = 0; i < cornersOnOneSide.length && i < closerFpvYsToCornersOnSide.length; i++) {
                 newFreePieceVariations2CornersOnOneSide.add(FreePieceVariation.getNewFreePieceVariation(
@@ -85,7 +82,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
         private TreeSet<FreePieceVariation> onSameYGetNewFreePieceVariations2CornersOnOneSideIf(
                 Coordinate[] cornersOnOneSide,
                 RectangleCorners fpvRectangleCorners
-        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException {
+        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, CornerNotOnSideException, NotAllCornersFoundException {
             int xNorth0Dist = cornersOnOneSide[0].getX() - fpvRectangleCorners.getNWCoord().getX();
             int xSouth0Dist = fpvRectangleCorners.getSECoord().getX() - cornersOnOneSide[0].getX();
             int[] closerFpvXsToCornersOnSide = new int[2];
@@ -110,7 +107,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
                 Coordinate[] cornersOnOneSide,
                 int[] closerFpvXsToCornersOnSide,
                 int differentY
-        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException {
+        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, NotAllCornersFoundException {
             TreeSet<FreePieceVariation> newFreePieceVariations2CornersOnOneSide = new TreeSet<>();
             for (int i = 0; i < cornersOnOneSide.length && i < closerFpvXsToCornersOnSide.length; i++) {
                 newFreePieceVariations2CornersOnOneSide.add(FreePieceVariation.getNewFreePieceVariation(
@@ -132,7 +129,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
             cornersNotOnOneSide.addAll(coordIfNotOnOneSide(pvRectangleCorners.getSECoord(), cornersOnOneSide));
             cornersNotOnOneSide.addAll(coordIfNotOnOneSide(pvRectangleCorners.getSWCoord(), cornersOnOneSide));
             if (cornersNotOnOneSide.size() != 2) throw new BadAmountOfCoordinatesFoundException(cornersNotOnOneSide, 2);
-            return TreeSetUtils.treeSetToArray(cornersNotOnOneSide);
+            return Coordinates.toArray(cornersNotOnOneSide);
         }
 
 
@@ -140,7 +137,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
                 Coordinate[] cornersOnOneSide,
                 Coordinate[] cornersNotOnOneSide,
                 RectangleCorners fpvRectangleCorners
-        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException {
+        ) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, LayoutFactoryNotInitiatedException, SheetSizeException, CloneNotSupportedException, NotAllCornersFoundException {
             if (cornersNotOnOneSide[0].getX() == cornersNotOnOneSide[1].getX() &&
                     cornersOnOneSide[0].getX() == cornersOnOneSide[1].getX()) {
                 TreeSet<Coordinate> fpv2CoordsOnNotCommonAxisSide = new TreeSet<>();
@@ -157,7 +154,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
                     newFreePieceCoords.add(fpv2Coord);
                     newFreePieceCoords.add(new Coordinate(cornersNotOnOneSide[0].getX(), fpv2Coord.getY()));
                 }
-                return FreePieceVariation.getNewFreePieceVariation(TreeSetUtils.treeSetToArray(newFreePieceCoords));
+                return FreePieceVariation.getNewFreePieceVariation(Coordinates.toArray(newFreePieceCoords));
             }
             if (cornersNotOnOneSide[0].getY() == cornersNotOnOneSide[1].getY() &&
                     cornersOnOneSide[0].getY() == cornersOnOneSide[1].getY()) {
@@ -175,7 +172,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
                     newFreePieceCoords.add(fpv2Coord);
                     newFreePieceCoords.add(new Coordinate(fpv2Coord.getX(), cornersNotOnOneSide[0].getY()));
                 }
-                return FreePieceVariation.getNewFreePieceVariation(TreeSetUtils.treeSetToArray(newFreePieceCoords));
+                return FreePieceVariation.getNewFreePieceVariation(Coordinates.toArray(newFreePieceCoords));
             }
             return null;
         }
@@ -188,14 +185,14 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
         }
     }, FOUR_CORNERS_ON_TWO_SIDES {
         @Override
-        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException {
+        public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException, NotAllCornersFoundException {
             validateArguments(overriddenFunctionName, freePieceVariation, pieceVariation);
             TreeSet<FreePieceVariation> cutUpFreePieceVariations = new TreeSet<>();
             cutUpFreePieceVariations.addAll(getNewFreePieceVariations4CornersOn2Sides(this.pvRectangleCorners, this.fpvRectangleCorners));
             return cutUpFreePieceVariations;
         }
 
-        private TreeSet<FreePieceVariation> getNewFreePieceVariations4CornersOn2Sides(RectangleCorners pvRectangleCorners, RectangleCorners fpvRectangleCorners) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, CornerNotOnSideException {
+        private TreeSet<FreePieceVariation> getNewFreePieceVariations4CornersOn2Sides(RectangleCorners pvRectangleCorners, RectangleCorners fpvRectangleCorners) throws CloneNotSupportedException, BadCoordinateValueException, PieceCanNotFitIntoLayoutException, NegativePiecePointsException, LayoutFactoryNotInitiatedException, SheetSizeException, CornerNotOnSideException, NotAllCornersFoundException {
             if (pvRectangleCorners.getNWCoord().getY() == fpvRectangleCorners.getNWCoord().getY() &&
                     pvRectangleCorners.getSECoord().getY() == fpvRectangleCorners.getSECoord().getY()) {
                 TreeSet<FreePieceVariation> newFreePieceVariations4CornersOn2Sides = new TreeSet<>();
@@ -241,7 +238,7 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
     };
 
     @Override
-    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, BadAmountOfCoordinatesFoundException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException {
+    public TreeSet<FreePieceVariation> getCutUpFreePieceVariation(FreePieceVariation freePieceVariation, PieceVariation pieceVariation) throws BadCoordinateValueException, BadAmountOfCoordinatesFoundException, NegativePiecePointsException, PieceCanNotFitIntoLayoutException, SheetSizeException, LayoutFactoryNotInitiatedException, CloneNotSupportedException, CutCaseNullArgumentException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NotAllCornersFoundException {
         throw new UnsupportedOperationException("Unimplemented");
     }
 
@@ -299,6 +296,6 @@ public enum CornersOnSidesFreePieceCutCase implements FreePieceCutCaseInterface 
         if (cornersOnSides.size() != 2 && cornersOnSides.size() != 4) {
             throw new BadAmountOfCoordinatesFoundException(cornersOnSides, 2, 4);
         }
-        return TreeSetUtils.treeSetToArray(cornersOnSides);
+        return Coordinates.toArray(cornersOnSides);
     }
 }

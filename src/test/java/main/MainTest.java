@@ -1,10 +1,13 @@
 package main;
 
-import cutter.Solution;
+import examples.Example;
 import org.junit.jupiter.api.*;
+import orientation.Orientation;
 import replaced.out.MainWithReplacedOut;
 import sheet.*;
 import sheet.exceptions.*;
+import solution.Solution;
+import test.utils.StringComparison;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -12,7 +15,7 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory {
+public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceFactory, StaticLayoutFactory.InterfaceTestingStaticSheetFactory, Piece.InterfaceTestingPieceSortStrategy {
     /**
      * String[] args:
      * 10 10 - płyta o wymiarach 10 x 10
@@ -48,18 +51,36 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
      * 7 H 6 8 - w punkcie(x,y): 6,8 umieszczamy horyzontalnie płytę o id 7, wymiary 2x4 za 1 punkt
      */
     public static String EXPECTED_OUTPUT = new StringBuilder()
-            .append("5\n")
-            .append("1 H 0 0\n")
-            .append("0 H 0 4\n")
-            .append("3 V 7 3\n")
-            .append("6 H 6 6\n")
+            .append("5\r\n")
+            .append("1 H 0 0\r\n")
+            .append("0 H 0 4\r\n")
+            .append("3 V 7 3\r\n")
+            .append("6 H 6 6\r\n")
             .append("7 H 6 8")
             .toString();
+
+
+    public static final Example shortExample = new Example(
+            new Example.InputData(
+                    new Example.InputData.LayoutData(3, 2),
+                    3,
+                    new Example.InputData.PieceInputData(1, 2, 1),
+                    new Example.InputData.PieceInputData(2, 1, 2),
+                    new Example.InputData.PieceInputData(1, 2, 0)
+            ),
+            new Example.OutputData(
+                    3,
+                    new Example.OutputData.PieceOutputData(1, Orientation.V, 0, 0),
+                    new Example.OutputData.PieceOutputData(0, Orientation.V, 1, 0),
+                    new Example.OutputData.PieceOutputData(2, Orientation.V, 2, 0)
+            )
+    );
 
     @BeforeEach
     void setUp() {
         this.resetLayoutFactory();
         this.resetPieceFactory();
+        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
     }
 
     @AfterEach
@@ -98,7 +119,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         PrintStream out = new PrintStream(byteArrayOutputStream);
         MainWithReplacedOut main = new MainWithReplacedOut(out);
         main.main(null);
-        assertNotNull(byteArrayOutputStream.toString());
+        assertNotNull(byteArrayOutputStream);
         assertFalse(byteArrayOutputStream.toString().isEmpty());
     }
 
@@ -110,7 +131,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         PrintStream out = new PrintStream(byteArrayOutputStream);
         MainWithReplacedOut main = new MainWithReplacedOut(out);
         main.main(new String[0]);
-        assertNotNull(byteArrayOutputStream.toString());
+        assertNotNull(byteArrayOutputStream);
         assertFalse(byteArrayOutputStream.toString().isEmpty());
     }
 
@@ -123,7 +144,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         MainWithReplacedOut main = new MainWithReplacedOut(out);
         String[] args = {""};
         main.main(args);
-        assertNotNull(byteArrayOutputStream.toString());
+        assertNotNull(byteArrayOutputStream);
         assertFalse(byteArrayOutputStream.toString().isEmpty());
     }
 
@@ -143,7 +164,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     void new_MainWithReplacedOut_no_args_mainTest_null() {
         MainWithReplacedOut main = new MainWithReplacedOut();
         main.main(null);
-        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertNotNull(main.getByteArrayOutputStream());
         assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
     }
 
@@ -153,7 +174,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
     void new_MainWithReplacedOut_no_args_mainTest_length_0() {
         MainWithReplacedOut main = new MainWithReplacedOut();
         main.main(new String[0]);
-        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertNotNull(main.getByteArrayOutputStream());
         assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
     }
 
@@ -164,7 +185,7 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         MainWithReplacedOut main = new MainWithReplacedOut();
         String[] args = {""};
         main.main(args);
-        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertNotNull(main.getByteArrayOutputStream());
         assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
     }
 
@@ -211,9 +232,9 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         MainWithReplacedOut main = new MainWithReplacedOut();
         String[] args = {"1"};
         main.main(args);
-        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertNotNull(main.getByteArrayOutputStream());
         assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
-        final String expectedExceptionMessage = "InputParser.validateLengthArgsForSheetLayoutFactory(String[] args) Amount of arguments must equal to 2 (args.length == 2) or be divisible by 3 (args.length % 3 == 0). Amount of arguments detected: 1. So args.length % 3 = 1.\n";
+        final String expectedExceptionMessage = "InputParser.validateLengthArgsForSheetLayoutFactory(String[] args) Amount of arguments must be equal to 2 (args.length == 2) or be divisible by 3 (args.length % 3 == 0). Amount of arguments detected: 1. So args.length % 3 = 1.\n";
         assertEquals(expectedExceptionMessage, main.getByteArrayOutputStream().toString());
     }
 
@@ -224,20 +245,104 @@ public class MainTest implements StaticPieceFactory.InterfaceTestingStaticPieceF
         MainWithReplacedOut main = new MainWithReplacedOut();
         String[] args = {"A", "1", "2"};
         main.main(args);
-        assertNotNull(main.getByteArrayOutputStream().toString());
+        assertNotNull(main.getByteArrayOutputStream());
         assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
         final String expectedExceptionMessage = "Could not parse sheet layout data. For input string: \"A\"\n";
         assertEquals(expectedExceptionMessage, main.getByteArrayOutputStream().toString());
     }
 
     @Test
+    @Order(16)
+    @DisplayName("Bad behaviour - not sure of result")
+    void Main_causing_error() {
+//        String[] args = new String[2 + 1 + 3 * 50];
+//        int layoutWidth = 100;
+//        int layoutHeight = 100;
+//        int amountOfPieces = 50;
+//        args[0] = String.valueOf(layoutWidth);
+//        args[1] = String.valueOf(layoutHeight);
+//        args[2] = String.valueOf(amountOfPieces);
+//        for (int i = 1, j = 3; i <= amountOfPieces && j + 2 < args.length; i++, j += 3) {
+//            int pieceWidth = i;
+//            int pieceHeight = i;
+//            int piecePoints = i;
+//            args[j] = String.valueOf(pieceWidth);
+//            args[j + 1] = String.valueOf(pieceHeight);
+//            args[j + 2] = String.valueOf(piecePoints);
+//        }
+//        MainWithReplacedOut main = new MainWithReplacedOut();
+//        main.main(args);
+//        assertNotNull(main.getByteArrayOutputStream());
+//        assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
+//        assertEquals("Not an error", main.getByteArrayOutputStream().toString());
+        assertFalse(true);
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("Pieces not fitting inside layout (too big pieces for layout)")
+    void Main_piece_not_fitting_inside_layout() {
+        String[] args = new String[2 + 1 + 3 * 50];
+        int layoutWidth = 10;
+        int layoutHeight = 10;
+        int amountOfPieces = 50;
+        args[0] = String.valueOf(layoutWidth);
+        args[1] = String.valueOf(layoutHeight);
+        args[2] = String.valueOf(amountOfPieces);
+        for (int i = 1, j = 3; i <= amountOfPieces && j + 2 < args.length; i++, j += 3) {
+            int pieceWidth = i;
+            int pieceHeight = i;
+            int piecePoints = i;
+            args[j] = String.valueOf(pieceWidth);
+            args[j + 1] = String.valueOf(pieceHeight);
+            args[j + 2] = String.valueOf(piecePoints);
+        }
+        MainWithReplacedOut main = new MainWithReplacedOut();
+        main.main(args);
+        assertNotNull(main.getByteArrayOutputStream());
+        assertFalse(main.getByteArrayOutputStream().toString().isEmpty());
+        String expectedOutput = String.format("%s%s%s",
+                "Piece.validate() Piece cannot fit into Layout, because Piece is bigger than Layout. \r\n",
+                "Piece width: 11, height: 11. \r\n",
+                "Layout width: 10, height: 10.\n"
+        );
+        System.out.println(StringComparison.compare(expectedOutput, main.getByteArrayOutputStream().toString()));
+        assertEquals(
+                expectedOutput,
+                main.getByteArrayOutputStream().toString()
+        );
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("short example (input & output data)")
+    void new_MainWithReplacedOut_no_args_constructor_main_shortExample() {
+        MainWithReplacedOut main = new MainWithReplacedOut();
+        main.main(shortExample.inputData.toArgs());
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, this.getPieceSortStrategy());
+        System.out.println(
+                String.format(
+                        "StringComparison.compare: \r\n%s",
+                        StringComparison.compare(
+                                shortExample.outputData.toOutputString(),
+                                main.getByteArrayOutputStream().toString()
+                        )
+                )
+        );
+        assertEquals(shortExample.outputData.toOutputString(), main.getByteArrayOutputStream().toString());
+    }
+
+    @Test
     @Order(99)
     @DisplayName("Example from PDF (input & output data)")
-    void new_MainWithReplacedOut_no_args_constructor_main_PDF_example_args_and_output() throws PieceSortStrategyNotInitiatedException {
-        MainWithReplacedOut main = new MainWithReplacedOut();
-        main.main(ARGS);
-        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
-        assertEquals(EXPECTED_OUTPUT, main.getByteArrayOutputStream().toString());
+    void new_MainWithReplacedOut_no_args_constructor_main_PDF_example_args_and_output() {
+//        MainWithReplacedOut main = new MainWithReplacedOut();
+//        main.main(ARGS);
+//        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+//        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, this.getPieceSortStrategy());
+//        assertEquals(EXPECTED_OUTPUT, main.getByteArrayOutputStream().toString());
+        assertFalse(true);
     }
 
     public static int getAmountOfPieceVariations(Solution solution) {

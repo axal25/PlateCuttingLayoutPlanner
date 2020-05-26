@@ -1,6 +1,6 @@
 package parser.exceptions;
 
-import cutter.Solution;
+import solution.Solution;
 
 public class NullSolutionException extends Exception {
     public NullSolutionException(Solution solution) {

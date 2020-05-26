@@ -2,7 +2,6 @@ package coords;
 
 import coords.exceptions.BadCoordinateValueException;
 import sheet.PieceVariation;
-import utils.collection.TreeSetUtils;
 
 import java.util.TreeSet;
 
@@ -94,7 +93,7 @@ public class RectangleCorners {
             if (other.isCoordinateInside(this.getSWCoord())) thisCornersInsideOther.add(this.getSWCoord());
             if (other.isCoordinateInside(this.getNECoord())) thisCornersInsideOther.add(this.getNECoord());
         }
-        return TreeSetUtils.treeSetToArray(thisCornersInsideOther);
+        return Coordinates.toArray(thisCornersInsideOther);
     }
 
     public boolean isThisRectangleInsideOtherOrOnSides(RectangleCorners outside) {
@@ -109,6 +108,15 @@ public class RectangleCorners {
                 this.getNWCoord().getY() <= coordinate.getY() &&
                 this.getSECoord().getX() >= coordinate.getX() &&
                 this.getSECoord().getY() >= coordinate.getY();
+    }
+
+    public Coordinate[] toCoordinateArray() throws BadCoordinateValueException {
+        Coordinate[] coordinates = new Coordinate[4];
+        coordinates[0] = this.getNWCoord();
+        coordinates[1] = this.getNECoord();
+        coordinates[2] = this.getSWCoord();
+        coordinates[3] = this.getSECoord();
+        return coordinates;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package cutter;
 
 import coords.exceptions.BadCoordinateValueException;
+import cutter.exceptions.LayoutIdDoNotMatchPreparedLayoutsIndexException;
+import cutter.exceptions.SolutionLayoutVariationLimitExceededException;
 import main.MainTest;
 import org.junit.jupiter.api.*;
 import parser.exceptions.BadAmountOfInputArgsException;
@@ -15,8 +17,7 @@ import sheet.cutcase.free.piece.exceptions.CutCaseNullArgumentException;
 import sheet.exceptions.*;
 import sheet.sort.strategy.PieceSortStrategy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, StaticLayoutFactory.InterfaceTestingStaticSheetFactory, StaticPieceFactory.InterfaceTestingStaticPieceFactory {
@@ -26,6 +27,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     void setUp() {
         this.resetPieceFactory();
         this.resetLayoutFactory();
+        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
     }
 
     @AfterEach
@@ -37,14 +39,14 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(1)
     @DisplayName("Cutter Constructor")
-    void cutterConstructor() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterConstructor() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         Cutter cutter = new Cutter(ARGS);
     }
 
     @Test
     @Order(2)
-    @DisplayName("Sort Pieces Default (LONGEST SIDE DESC) Strategy")
-    void cutterSortDefault() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    @DisplayName("Sort Pieces Default (Piece.DEFAULT_PIECE_SORT_STRATEGY) Strategy")
+    void cutterSortDefault() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, this.getPieceSortStrategy());
         this.setPieceSortStrategy(PieceSortStrategy.LONGEST_SIDE_DESC);
         Cutter cutter = new Cutter(ARGS);
@@ -57,7 +59,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(3)
     @DisplayName("Sort Pieces AREA DESC Strategy")
-    void cutterSortAreaDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortAreaDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.AREA_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -79,7 +81,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(4)
     @DisplayName("Sort Pieces LONGEST SIDE DESC Strategy")
-    void cutterSortLongestSideDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortLongestSideDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.LONGEST_SIDE_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -101,7 +103,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(5)
     @DisplayName("Sort Pieces HEIGHT DESC Strategy")
-    void cutterSortHeightDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortHeightDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.HEIGHT_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -113,7 +115,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(6)
     @DisplayName("Sort Pieces WIDTH DESC Strategy")
-    void cutterSortWidthDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortWidthDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.WIDTH_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -133,7 +135,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(7)
     @DisplayName("Sort Pieces POINTS_TO_AREA_RATIO_DESC Strategy")
-    void cutterSortPointsToAreaRatioDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortPointsToAreaRatioDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.POINTS_TO_AREA_RATIO_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -160,7 +162,7 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(8)
     @DisplayName("Sort Pieces POINTS_TO_LONGEST_SIDE_RATIO_DESC Strategy")
-    void cutterSortPointsToLongestSideRationDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException {
+    void cutterSortPointsToLongestSideRationDesc() throws CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryAlreadyInitiatedException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, SheetSizeException, LayoutFactoryNotInitiatedException, PieceCanNotFitIntoLayoutException, LayoutIdDoNotMatchPreparedLayoutsIndexException {
         this.setPieceSortStrategy(PieceSortStrategy.POINTS_TO_LONGEST_SIDE_RATIO_DESC);
         Cutter cutter = new Cutter(ARGS);
         Piece[] pieces = cutter.getPieces();
@@ -187,54 +189,71 @@ public class CutterTest implements Piece.InterfaceTestingPieceSortStrategy, Stat
     @Test
     @Order(9)
     @DisplayName("Developing test")
-    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, PieceSortStrategyNotInitiatedException {
-        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
-        Cutter cutter = new Cutter(ARGS);
-        String output = cutter.cut();
-        System.out.println("Solutions ----------------------------------------------------------------");
-        for (Solution solution : cutter.getSolutions()) {
-            System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-            System.out.println(solution.toString(0));
-            System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
-        }
-        System.out.println("output: \n\r" + output);
-        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
-        assertEquals(4, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
-        assertEquals(-1, cutter.getBestSolution().getPointSum());
-        assertEquals(7, cutter.getBestSolution().getPointSum());
+    void cutter() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, NotAllCornersFoundException, LayoutIdDoNotMatchPreparedLayoutsIndexException, SolutionLayoutVariationLimitExceededException {
+//        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
+//        Cutter cutter = new Cutter(ARGS);
+//        String output = cutter.cut();
+//        System.out.println("Solutions ----------------------------------------------------------------");
+//        for (Solution solution : cutter.getSolutions()) {
+//            System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            System.out.println(solution.toString(0));
+//            System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
+//        }
+//        System.out.println("output: \n\r" + output);
+//        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+//        System.out.println(String.format("cutter.getBestSolution(): %s", cutter.getBestSolution().toString()));
+//        if (Piece.getPieceSortStrategy() == PieceSortStrategy.POINTS_TO_LONGEST_SIDE_RATIO_DESC) {
+//            org.hamcrest.MatcherAssert.assertThat(
+//                    cutter.getBestSolution().getPointSum(),
+//                    org.hamcrest.Matchers.greaterThan(0)
+//            );
+//            org.hamcrest.MatcherAssert.assertThat(
+//                    cutter.getBestSolution().getPointSum(),
+//                    org.hamcrest.Matchers.greaterThanOrEqualTo(7)
+//            );
+//            assertEquals(11, cutter.getBestSolution().getPointSum());
+//            assertEquals(5, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+//        } else {
+//            assertEquals(-1, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+//            assertEquals(0, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+//            assertEquals(-1, cutter.getBestSolution().getPointSum());
+//            assertEquals(0, cutter.getBestSolution().getPointSum());
+//        }
+        assertFalse(true);
     }
 
     @Test
     @Order(10)
     @DisplayName("Best solution == no cutting")
-    void cutterBestSolutionForNoCutting() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, CandidatePieceVariationCouldNotBeFitIntoEmptyLayoutVariation, BadCoordinateValueException, CandidatePieceVariationPositionAlreadySetException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, PieceSortStrategyNotInitiatedException {
-        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
-        String[] noPointsArgs = {
-                "100", "3",
-                "10",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-                "100", "2", "1",
-        };
-        Cutter cutter = new Cutter(noPointsArgs);
-        String output = cutter.cut();
-        System.out.println("Solutions ----------------------------------------------------------------");
-        for (Solution solution : cutter.getSolutions()) {
-            System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-            System.out.println(solution.toString(0));
-            System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
-        }
-        System.out.println("output: \n\r" + output);
-        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
-        assertEquals(0, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
-        assertEquals(0, cutter.getBestSolution().getPointSum());
+    void cutterBestSolutionForNoCutting() throws PieceCanNotFitIntoLayoutException, SheetAmountExceededLimitException, NegativePiecePointsException, BadAmountOfInputArgsException, LayoutFactoryAlreadyInitiatedException, CalculatedAndInputAmountOfPiecesNotMatchException, LayoutFactoryNotInitiatedException, SheetSizeException, BadCoordinateValueException, CloneNotSupportedException, PieceVariationsNotInitiatedException, CutCaseNullArgumentException, BadAmountOfCoordinatesFoundException, CornerNotOnSideException, CornersOnSidesShareNoCoordinateException, NullSolutionException, NotAllCornersFoundException, LayoutIdDoNotMatchPreparedLayoutsIndexException, SolutionLayoutVariationLimitExceededException {
+//        this.setPieceSortStrategy(Piece.DEFAULT_PIECE_SORT_STRATEGY);
+//        String[] noPointsArgs = {
+//                "100", "3",
+//                "10",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//                "100", "2", "1",
+//        };
+//        Cutter cutter = new Cutter(noPointsArgs);
+//        String output = cutter.cut();
+//        System.out.println("Solutions ----------------------------------------------------------------");
+//        for (Solution solution : cutter.getSolutions()) {
+//            System.out.println("\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            System.out.println(solution.toString(0));
+//            System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\");
+//        }
+//        System.out.println("output: \n\r" + output);
+//        assertEquals(Piece.DEFAULT_PIECE_SORT_STRATEGY, Piece.getPieceSortStrategy());
+//        assertEquals(0, MainTest.getAmountOfPieceVariations(cutter.getBestSolution()));
+//        assertEquals(0, cutter.getBestSolution().getPointSum());
+        assertFalse(true);
     }
 
 }

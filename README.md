@@ -49,4 +49,42 @@ First-fit decreasing has an intuitive appeal to it, for we pack the bulky object
 First-fit decreasing is easily implemented inO(n*lg(n)+b*n) time, where b ≤ min(n, m) is the number of bins actually used. 
 Simply do a linear sweep through the bins on each insertion. 
 A fasterO(n*lg(n)) implementation is possible by using a binary tree to keep track of the space remaining in each bin.
- 
+
+### Still work in progress
+
+### Test - getOutputString PDF Example
+<img src="./screens/1mil_solution_variations_tests.png" width="30%">
+
+```java
+			pickBetterSolutionVariation(Solution previousSolutionVariation, Solution currentSolutionVariation) - level: 1
+ 						previousSolutionVariation: Solution: null
+ 						vs.
+ 						currentSolutionVariation: pointSum: 16, layoutVariationsSize: 1, freeSpaceTotalPoints: -4, amountOfPieceVariations: 6, pieceVariationsTotalPoints: 20
+ 						previousSolutionVariation == null | return currentSolutionVariation;
+ 		getBestSolutionVariationFromNextLevels(LinkedHashSet<Piece> sortedPiecesToCutFirst, TreeSet<Solution> solutionVariations) - pickedBetterSolutionVariation: pointSum: 16, layoutVariationsSize: 1, freeSpaceTotalPoints: -4, amountOfPieceVariations: 6, pieceVariationsTotalPoints: 20
+ 		getBestSolutionVariationFromNextLevels(LinkedHashSet<Piece> sortedPiecesToCutFirst, LinkedHashSet<Piece> sortedPiecesToCutLater, TreeSet<Solution> solutionVariations) - for --------------
+ cutter.getCurSolutionsChecked(): 1000013
+ cutter.getBestSolution(): Solution{layoutVariations=TreeSet<LayoutVariation>{LayoutVariation{layout=Layout{id=0, width=10, height=10}, this.freeArea=4, points=16, pieceVariations=LinkedHashSet<PieceVariation>{PieceVariation{piece=Piece{id=7, width=4, height=2, points=1}, orientation=H, northEasternCoord=Coordinate{x=0, y=0}}PieceVariation{piece=Piece{id=0, width=6, height=6, points=9}, orientation=H, northEasternCoord=Coordinate{x=4, y=0}}PieceVariation{piece=Piece{id=2, width=2, height=5, points=5}, orientation=V, northEasternCoord=Coordinate{x=0, y=2}}PieceVariation{piece=Piece{id=1, width=7, height=4, points=3}, orientation=H, northEasternCoord=Coordinate{x=2, y=6}}PieceVariation{piece=Piece{id=5, width=2, height=3, points=1}, orientation=V, northEasternCoord=Coordinate{x=0, y=7}}PieceVariation{piece=Piece{id=6, width=2, height=4, points=1}, orientation=V, northEasternCoord=Coordinate{x=2, y=2}}}}}}
+ cutter.getBestSolution().getPointSum(): 16
+ ```
+
+```java
+cutter.getBestSolution(): 
+    Solution{
+        layoutVariations=TreeSet<LayoutVariation>{
+            LayoutVariation{
+                layout=Layout{id=0, width=10, height=10}, 
+                this.freeArea=4, 
+                points=16, 
+                pieceVariations=LinkedHashSet<PieceVariation>{
+                    PieceVariation{piece=Piece{id=7, width=4, height=2, points=1}, orientation=H, northEasternCoord=Coordinate{x=0, y=0}}
+                    PieceVariation{piece=Piece{id=0, width=6, height=6, points=9}, orientation=H, northEasternCoord=Coordinate{x=4, y=0}}
+                    PieceVariation{piece=Piece{id=2, width=2, height=5, points=5}, orientation=V, northEasternCoord=Coordinate{x=0, y=2}}
+                    PieceVariation{piece=Piece{id=1, width=7, height=4, points=3}, orientation=H, northEasternCoord=Coordinate{x=2, y=6}}
+                    PieceVariation{piece=Piece{id=5, width=2, height=3, points=1}, orientation=V, northEasternCoord=Coordinate{x=0, y=7}}
+                    PieceVariation{piece=Piece{id=6, width=2, height=4, points=1}, orientation=V, northEasternCoord=Coordinate{x=2, y=2}}
+                }
+            }
+        }
+    } 
+```
